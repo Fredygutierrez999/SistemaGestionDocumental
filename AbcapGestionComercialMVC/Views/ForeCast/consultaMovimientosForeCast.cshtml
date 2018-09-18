@@ -1,0 +1,23 @@
+﻿@using AbcapGestionComercialMVC.Models.Clases.ForeCast;
+@model List<clsAppNetProyeccionForeCast_Movimientos>
+<table class="table table-condensed table-striped table-hover">
+    <thead>
+        <tr>
+            <td><strong>Usuario</strong></td>
+            <td><strong>Tipo</strong></td>
+            <td><strong>Fecha</strong></td>
+            <td><strong>Descripción</strong></td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (clsAppNetProyeccionForeCast_Movimientos obj in Model)
+        {
+            <tr>
+                <td>@obj.NombreUsuario</td>
+                <td>@obj.NombreTipo</td>
+                <td>@obj.FechaMovimiento</td>
+                <td>@((string)obj.Descripcion)</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,96 @@
+﻿@using AbcapGestionComercialMVC.Models.Clases.ForeCast;
+@using AbcapGestionComercialMVC.App_Start;
+@model List<clsAppNetProyeccionForeCast>
+
+@if (Model.Count > 0)
+{
+    <div class="panel-heading">
+        Resultado <span class="badge">@Model.Count</span>
+    </div>
+    <div class="panel-body">
+        <table class="table table-condensed table-hover">
+            <thead>
+                <tr>
+                    <th style="min-width:40px">ID</th>
+                    <th style="min-width:90px">Productos</th>
+                    <th style="min-width:90px">Proyeccion</th>
+                    <th style="min-width:90px" class="text-center">Archivos</th>
+                    <th style="min-width:250px">Nombre</th>
+                    <th>Tipo dato</th>
+                    <th style="min-width:40px">Sem. Inicial</th>
+                    <th style="min-width:40px">Sem. Final</th>
+                    <th>Fecha creación</th>
+                    <th style="min-width:40px">Fecha modificación</th>
+                    <th style="min-width:40px">Estado</th>
+                    <th>Movimientos</th>
+                    <th>
+                        <span class="glyphicon glyphicon-signal"></span>
+                    </th>
+                    <th>
+                        <span class="glyphicon glyphicon-file"></span>
+                    </th>
+                    <th>
+                        <span class="glyphicon glyphicon-export"></span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (clsAppNetProyeccionForeCast objItem in Model)
+                {
+                <tr style="background-color:#fff8f8">
+                    <td>
+                        <a href="javascript:CreaModificaForeCast(@objItem.ID)" ;>
+                            @objItem.Consecutivo
+                            <span class="glyphicon glyphicon-tag"></span>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="~/ForeCast/ConfiguracionClientesProductos?xIDUnico=@SHA.Encriptar(objItem.ID.ToString())" target="_blank">
+                            <span title="Pulse aqui para seleccionar los productos que desea proyectar." class="glyphicon glyphicon-list-alt"></span>
+                            Productos
+                        </a>
+                    </td>
+                    <td>
+                        <a href="~/ForeCast/Index/?xIDUnico=@SHA.Encriptar(objItem.ID.ToString())" target="_blank">
+                            <span title="Pulse aqui para seleccionar iniciar configuración de proyección." class="glyphicon glyphicon-th"></span>
+                            Proyectar
+                        </a>
+                    </td>
+                    <td>
+                        <a href="Javascript:MostrarventanaAdministradorArchivos(@objItem.ID.ToString())" target="_blank">
+                            <span title="Pulse aqui para subir archivos." class="glyphicon glyphicon-file"></span>
+                            Administrar
+                        </a>
+                    </td>
+                    <td>@objItem.Nombre</td>
+                    <td>@objItem.Bas_TipoDatoPYG.Nombre</td>
+                    <td>@objItem.AnioSemanaInicial.Nombre</td>
+                    <td>@objItem.AnioSemanaFinal.Nombre</td>
+                    <td>@objItem.FechaCreacion.ToString("MM/dd/yyyy HH:mm:ss")</td>
+                    <td>@objItem.FechaModificacion.ToString("MM/dd/yyyy HH:mm:ss")</td>
+                    <td>@objItem.EstadoObj.Nombre</td>
+                    <td class="text-center">
+                        <a href="Javascript:consultaMovimientosForeCast(@objItem.ID.ToString())">
+                            <span title="Pulse aqui para ver el comportamiento por canal de las cajas proyectadas." class="glyphicon glyphicon-film"></span>
+                            Ver
+                        </a>
+                    </td>
+                    <td class="text-center">
+                        <span title="Pulse aquí para ver en una grafica comparando las cajas Vs tiempo del ForeCast / Proyección." onclick="generarGraficaDeVentas(@objItem.ID,'preFor');" class="pointer glyphicon glyphicon-eye-open"></span>
+                    </td>
+                    <td>
+                        <span title="Pulse aquí para exportar los datos del ForeCast / Proyección a un archivo Excel." onclick="seleccionarTipoArchivoExcel(@objItem.ID,'preFor');" class="pointer glyphicon glyphicon-download"></span>
+                    </td>
+                    <th>
+                        <span title="Pulse aqui para realizar la exportación de datos del ForeCast a Abcap Gestion Comercial." class="pointer glyphicon glyphicon-transfer" onclick="generarResumenGeneral(@objItem.ID,'preFor');" ></span>
+                    </th>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-warning">Sin datos</div>
+}

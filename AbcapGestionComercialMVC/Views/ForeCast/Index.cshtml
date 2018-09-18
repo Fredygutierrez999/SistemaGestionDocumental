@@ -1,0 +1,346 @@
+﻿@using AbcapGestionComercialMVC.Models.Clases
+@using AbcapGestionComercialMVC.Models.Clases.Seguridad
+@model clsProyeccionVenta
+@{
+    ViewBag.Title = "Proyección Venta";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+    serializer.MaxJsonLength = 999999999;
+}
+<div class="container-fluid">
+    @Html.Hidden("hdfIDModificacion", (string)ViewBag.IDModificacion)
+    @Html.Hidden("hdfID", (string)ViewBag.IDUnico)
+    @Html.Hidden("hdfCanal", (string)(Model != null ? Model.Canal : "-1"))
+    @Html.Hidden("hdfIDProyeccionVenta", (Model != null) ? Model.ID.ToString() : "-1")
+    @Html.Hidden("hdfColumnas", (Model != null) ? serializer.Serialize(Model.lstColumnas) : "")
+    @Html.Hidden("hdfDetalleProyeccion", (Model != null) ? serializer.Serialize(Model.lstDetalleProyeccionResumen) : "")
+    @Html.Hidden("hdfClientes", (Model != null) ? serializer.Serialize(Model.lstClientes) : "")
+    @Html.Hidden("hdfProductos", (Model != null) ? serializer.Serialize(Model.lstProductos) : "")
+    @Html.Hidden("hdfPresentaciones", (Model != null) ? serializer.Serialize(Model.lstPresentaciones) : "")
+    @Html.Hidden("hdfTemporadas", (Model != null) ? serializer.Serialize(Model.lstTemporadas) : "")
+    @Html.Hidden("hdfPeriodos", (Model != null) ? serializer.Serialize(Model.lstPeriodos) : "")
+
+    <div class="row pt1">
+        <div class="col-md-12">
+            <div class="container-gridEdit">
+                <div class="cabeza">
+                    <div class="titulo">
+                        <b>Detalle proyección</b>
+                        <b style="float:right" id="lblNombreArchivo"> - @Html.Raw(Model != null ? Model.Nombre : string.Empty)</b>
+                        <b style="float:right" ><strong id="lblCanalArchivo">@Html.Raw(Model != null ? " Canal: " + Model.Canal : "")</strong></b>
+                    </div>
+                    <div class="barraHerramientas">
+                        <span class="btn btn-sm btn-default"><span class="glyphicon glyphicon-chevron-left"></span> Atras</span>
+                        <span class="btn btn-sm btn-default">Adelante <span class="glyphicon glyphicon-chevron-right"></span></span>
+                        <span class="separador"></span>
+                        <span class="btn btn-sm btn-default btnAccion" accion="2"><span class="glyphicon glyphicon-plus-sign"></span> Cambiar canal</span>
+                        @*<span class="separador"></span>*@
+                        <span class="btn btn-sm btn-default btnAccion" accion="3"><span class="glyphicon glyphicon-plus-sign"></span> Cambiar productos a proyectar</span>
+                        <input type="checkbox" checked="checked" onclick="return controlScrollPersonalizado();" id="chkColumnasFijas" /><small>Columnas fijas</small>
+                        <span class="separador"></span>
+                        <span class="btn btn-sm btn-warning btnAccion" accion="6" id="btnEdicionDatos"><span class="glyphicon glyphicon-edit"></span> Seleccionar y editar</span>
+                        <span class="separador"></span>
+                        <span class="btn btn-sm btn-default btnAccion" accion="5"><span class="glyphicon glyphicon-signal"></span> Ver grafico de comportamiento de venta</span>
+                        <span class="separador"></span>
+                        <span class="btn btn-sm btn-default btnAccion" accion="4"><span class="glyphicon glyphicon-import"></span> Importar datos</span>
+                        <span class="btn btn-sm btn-default btnAccion" accion="7"><span class="glyphicon glyphicon-download"></span></span>
+
+                        <span class="btn btn-sm btn-success right btnAccion" accion="901" style="float:right"><span class="glyphicon glyphicon-ok-circle"></span> Guardar y Cerrar</span>
+                        <span class="btn btn-sm btn-success right btnAccion" accion="900" style="float:right"><span class="glyphicon glyphicon-ok-circle"></span> Guardar</span>
+                    </div>
+                    <div class="barraHerramientas" style="height:auto">
+                        <div class="row">
+                            <div class="col-md-1 text-right pt1">
+                                <small>Filtros:</small>
+                            </div>
+                            <div class="col-md-2">
+                                <select id="DromnDownClientes" btnAccionFiltro="btnFiltroCliente" class="selectpicker show-menu-arrow form-control form-control-cmb-sm ctr-left" style="width:85% !important" multiple>
+                                    @*data-max-options="2"*@
+                                </select>
+                                <div id="btnFiltroCliente" style="display:none" cmbFiltro="DromnDownClientes" class="btn btn-sm btn-warning ctr-right w-15 btn-remove-Filtro" onclick="removerFiltrosSeleccionados(this);" >
+                                    <span class="glyphicon glyphicon-filter"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <select id="DromnDownProductos" btnAccionFiltro="btnFiltroProducto" class="selectpicker show-menu-arrow form-control form-control-cmb-sm  ctr-left" multiple></select>
+                                <div id="btnFiltroProducto" style="display:none"  cmbFiltro="DromnDownProductos" class="btn btn-sm btn-warning ctr-right w-15 btn-remove-Filtro" onclick="removerFiltrosSeleccionados(this);">
+                                    <span class="glyphicon glyphicon-filter"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <select id="DromnDownPresentacion" btnAccionFiltro="btnFiltroPresentacion" class="selectpicker show-menu-arrow form-control form-control-cmb-sm  ctr-left" multiple></select>
+                                <div id="btnFiltroPresentacion" style="display:none"  cmbFiltro="DromnDownPresentacion" class="btn btn-sm btn-warning ctr-right w-15 btn-remove-Filtro" onclick="removerFiltrosSeleccionados(this);">
+                                    <span class="glyphicon glyphicon-filter"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <select id="DromnDownTemporada" btnAccionFiltro="btnFiltroTemporada"  class="selectpicker show-menu-arrow form-control form-control-cmb-sm  ctr-left" multiple></select>
+                                <div id="btnFiltroTemporada" style="display:none"  cmbFiltro="DromnDownTemporada" class="btn btn-sm btn-warning ctr-right w-15 btn-remove-Filtro" onclick="removerFiltrosSeleccionados(this);">
+                                    <span class="glyphicon glyphicon-filter"></span>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                </div>
+                <div class="cuerpo">
+                    <div class="scroll">
+                        <div class="scrroll-top">
+                            <span class="glyphicon glyphicon-chevron-up" style="font-size:11px" aria-hidden="true"></span>
+                        </div>
+                        <div class="scrroll-bottom">
+                            <span class="glyphicon glyphicon-chevron-down" style="font-size:11px" aria-hidden="true"></span>
+                        </div>
+                        <div class="scrroll-desplazo"></div>
+                    </div>
+                    <div class="tabla-datos" onscroll="controlScrollPersonalizado();">
+                        <div class="tabla-cabeza">
+                            <table>
+                                <thead id="tblColumnas"></thead>
+                            </table>
+                        </div>
+                        <div class="tabla-cuerpo">
+                            <table id="tblProyeccionVentaDetalle" class="table-sobre table-formatoProyeccion">
+                                <tbody id="tblDatosProyeccion"></tbody>
+                            </table>
+                        </div>
+                        <table id="tbl-Flotante">
+                            <thead class="tbl-Cabeza-Flotante tabla-cabeza">
+
+                            </thead>
+                            <tbody class="tbl-Cuerpop-Flotante tabla-cuerpo"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="Pie cabeza">
+                    <div class="barraHerramientas">
+                        <div class="row">
+                            <div class="col-md-3 text-left">
+                                <label id="lblSincronizacion"><strong>Última sincronización: MM/DD/YYYY HH:MM:SS    </strong></label>
+                            </div>
+                            <div class="col-md-2">
+                                <label id="lblEstado">Estado: </label>
+                                <label class="alert-danger" id="CapEstado">Sincronizado</label>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="row">
+                                    <div class="col-md-12 text-right">
+                                        <label>Cantidad cajas: </label>
+                                        <label class="alert-danger" id="divCantidadTotaCajas">0</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="row">
+                                    <div class="col-md-12 text-right">
+                                        <label>Cantidad tallos: </label>
+                                        <label class="alert-danger" id="divCantidadTotaTallos">0</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 text-right">
+                                <label id="lblTotalResumen">0 al 0 registros de 000000</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="modal modal-sm fade" id="popupAgregarProducto" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Agregar producto</h4>
+            </div>
+            <div class="modal-body">
+                <p>One fine body&hellip;</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-sm btn-primary">Save changes</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<div class="modal modal-sm fade" id="popupConsultarProyecciones" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" id="cuerpoPopupConsultaProyecciones">
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal modal-sm fade" id="popupImportarDatos" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" id="popupCuerpoImportarDatos">
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal modal-sm fade" id="popupNuevaProyecciones" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" id="cuerpoPopupNuevaProyecciones">
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+
+<div class="modal modal-sm fade" id="popupGraficaProductoComercial" tabindex="-1" role="dialog">
+    <div class="modal-dialog" style="width:70%" role="document">
+        <div class="modal-content" id="cuerpoGraficaProductoComercial">
+            <div class="modal-body">
+                <div style="width:100%;" id="divContenedorGraficas">
+                    <canvas id="canvas"></canvas>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-md-5"></div>
+                <div class="col-md-2">
+                    <div class="btn btn-sm btn-default w-100" data-dismiss="modal">
+                        Cerrar <span class="glyphicon glyphicon-remove-circle"></span>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<div class="modal modal-sm fade" id="popupTallosProductoComercial" tabindex="-1" role="dialog">
+    <div class="modal-dialog" style="width:20%" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <strong>Cantidada de tallos</strong>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6 text-right">
+                        <label>Tallos: </label>
+                    </div>
+                    <div class="col-md-6">
+                        <p id="lblCantidadTallosProductos">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-md-3"></div>
+                <div class="col-md-6">
+                    <div class="btn btn-sm btn-default w-100" data-dismiss="modal">
+                        Cerrar <span class="glyphicon glyphicon-remove-circle"></span>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<div class="modal modal-sm fade" id="popupAsignarValor" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog">
+    <div class="modal-dialog" style="width:20%" role="document">
+        <div class="modal-content" id="cuerpoAsingarValor">
+            <div class="modal-header">
+                <div class="modal-title" id="lblTituloAsignarValor">
+                    Asignar promerio
+                </div>
+            </div>
+            <div class="modal-body">
+                <input id="hdftipoExportacion" type="hidden" value="0" />
+                <div class="row">
+                    <div class="col-md-4 text-right">
+                        <small>Valor: </small>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" value="0" placeholder="0" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-md-6">
+                    <div class="btn btn-sm btn-default w-100" data-dismiss="modal">
+                        Cerrar <span class="glyphicon glyphicon-remove-circle"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="btn btn-sm btn-success w-100" data-dismiss="modal">
+                        Aplicar <span class="glyphicon glyphicon-ok-circle"></span>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+
+<div class="modal modal-sm fade" id="popupAsignarValorMultriple" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog">
+    <div class="modal-dialog" style="width:40%" role="document">
+        <div class="modal-content" id="cuerpoAsingarValorMultriple">
+            <div class="modal-header">
+                <div class="modal-title" id="lblTituloAsignarValor">
+                    Asignar valor a items selecionados
+                </div>
+            </div>
+            <div class="modal-body">
+                <input id="hdftipoExportacion" type="hidden" value="0" />
+                <div class="row">
+                    <div class="col-md-2 text-right">
+                        <small>Proceso: </small>
+                    </div>
+                    <div class="col-md-10">
+                        <ul>
+                            <li><input type="radio" onchange="habilitarCajaADatos();" id="rbtnValorFijo" name="rbtnTipoProceso" checked="checked" placeholder="0" /> Aplicar valor fijo a celdas seleccionadas</li>
+                            <li><input type="radio" onchange="habilitarCajaADatos();" id="rbtnValorPromedio" name="rbtnTipoProceso" placeholder="0" /> Aplicar promedio a celdas seleccionadas</li>
+                            <li><input type="radio" onchange="inactivarCajaADatos();" id="rbtnPromediaDatos" name="rbtnTipoProceso" placeholder="0" /> Promediar datos seleccionados</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2 text-right pt1">
+                        <small>Valor: </small>
+                    </div>
+                    <div class="col-md-8">
+                        <input id="txtValorAAplicarDatos" type="text" value="0" onkeydown="cargarEnterValores();" placeholder="0" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-md-6">
+                    <div class="btn btn-sm btn-default w-100" data-dismiss="modal">
+                        Cerrar <span class="glyphicon glyphicon-remove-circle"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="btn btn-sm btn-success w-100" onclick="aplicarValoresADatos();">
+                        Aplicar <span class="glyphicon glyphicon-ok-circle"></span>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script type="text/javascript" src="~/Scripts/jquery-1.10.2.js"></script>
+<script type="text/javascript" src="~/Scripts/ViewsJS/clasesControlProyeccion.js?version=07272180744"></script>
+<script type="text/javascript" src="~/Scripts/ViewsJS/ControlForeCast.js?version=07272180744"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        cargarListados();
+        if ($('#hdfIDProyeccionVenta').val() == '-1') {
+            consultarProyecciones();
+        }
+    });
+</script>

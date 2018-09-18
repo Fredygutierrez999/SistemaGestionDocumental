@@ -1,0 +1,486 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    /*max-width: 280px;*/
+}
+
+
+/*MUESTRA SELECCION DE CELDA*/
+.table-sobre tr td:hover {
+    background-color: #e6c588;
+    border: 1px solid #808080;
+    cursor: cell;
+}
+
+/*MUESTRA SELECCION DE CELDA*/
+.table-formatoProyeccion tr td {
+    /*min-width: 80px;*/
+    text-align: center;
+    min-height: 30px;
+    height: 20px;
+    border: 1px solid #dcd3d3;
+    font-size: 12px;
+    font-weight: 100;
+}
+
+/*TAMAÑO PEQUEÑO CONTROL*/
+.form-control-sm {
+    height: 17px !important;
+    text-align: center;
+}
+
+/*TAMAÑO PEQUEÑO CONTROL*/
+.form-control-smX {
+    height: 24px !important;
+}
+
+/*TAMAÑO PEQUEÑO CONTROL*/
+.form-control-cmb-sm {
+    height: 28px !important;
+    text-align: center;
+}
+
+/*REMUEVE MARGENES DE ROW EN TABLA*/
+.row-tabla {
+    margin: 0px !important;
+}
+/*ESTILO PARA BOTON CON ACCION*/
+.accion-puntero {
+    font-size: 12px;
+    color: #808080;
+}
+
+    .accion-puntero:hover {
+        cursor: pointer;
+        font-size: 14px;
+        color: #000000;
+    }
+
+.modal-sm > .modal-dialog > .modal-content {
+    border-radius: 4px !important;
+}
+
+    .modal-sm > .modal-dialog > .modal-content > .modal-header {
+        padding: 5px 5px 5px 10px;
+    }
+
+    .modal-sm > .modal-dialog > .modal-content > .modal-footer {
+        padding: 5px 5px 5px 10px;
+    }
+
+hr {
+    padding: 5px !important;
+    margin: 5px !important;
+}
+
+
+.table-responsive > .fixed-column {
+    position: absolute;
+    display: inline-block;
+    width: auto;
+    border-right: 1px solid #ddd;
+}
+
+@media(min-width:768px) {
+    .table-responsive > .fixed-column {
+        display: none;
+    }
+}
+
+.datosFijos {
+    background-color: white;
+    width: 450px;
+    position: absolute;
+    left: 32px;
+    top: 32px;
+    z-index: 1;
+}
+
+.container-gridEdit {
+    width: 100%;
+    height: 560px;
+    border: 1px solid #83abcd;
+    background: #dae6f0;
+    color: #333;
+    box-shadow: 4px 4px 10px 0px rgba(50, 50, 50, 0.75);
+    margin-bottom: 12px;
+    font-family: Arial;
+    font-size: 12px;
+    overflow: hidden;
+    position: relative;
+    z-index: 0;
+    box-sizing: border-box;
+    /*BORDES*/
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-top-left-radius: 4px;
+    border: 1px solid #aaaaaa;
+    background: #ffffff;
+    color: #222222;
+}
+
+
+    .container-gridEdit .cabeza {
+        background: #dae6f0;
+        color: #333;
+        border-color: #a8c4dc;
+    }
+
+        .container-gridEdit .cabeza .titulo {
+            line-height: normal;
+            font-family: inherit;
+            font-size: inherit;
+            padding: 3px
+        }
+
+        .container-gridEdit .cabeza .barraHerramientas {
+            border-color: #a8c4dc;
+            border-top: 1px solid transparent;
+            padding: 4px 5px;
+            zoom: 1;
+            text-align: left;
+        }
+
+.barraHerramientas .btn {
+    padding: 3px !important;
+    border: 1px solid #d3d3d3;
+    /*url(images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x font-weight: normal;*/
+    color: #555555;
+    background-color: #fefefe;
+    background: -webkit-gradient(linear, left top, left bottom, from(#fefefe), to(#dae6f0));
+    background: -webkit-linear-gradient(top, #fefefe, #dae6f0);
+}
+
+.barraHerramientas .separador {
+    border: 1px solid #aaaaaa;
+    background: #ffffff url(../imagenes/Separador.png) 50% 50% repeat-x;
+    color: #222222;
+    height: 100%;
+    min-height: 45px;
+    margin-right: 3px;
+}
+
+.container-gridEdit .cuerpo {
+    padding-right: 18px
+}
+
+    .container-gridEdit .cuerpo .scroll {
+        height: 430px;
+        position: absolute;
+        right: 0;
+        font-family: Arial;
+        font-size: 12px;
+        line-height: normal;
+        margin: 0;
+        padding: 0;
+        width: 17px;
+        background: #efefef;
+    }
+
+        .container-gridEdit .cuerpo .scroll .scrroll-top {
+            position: absolute;
+            top: 0px;
+            width: 100%;
+            background-color: #e7ecf2;
+            border: 1px solid #aaaaaa;
+            border-radius: 2px;
+        }
+
+            .container-gridEdit .cuerpo .scroll .scrroll-top:hover {
+                background-color: #c1c7ce;
+            }
+
+
+        .container-gridEdit .cuerpo .scroll .scrroll-bottom {
+            position: absolute;
+            bottom: 0px;
+            width: 100%;
+            background-color: #e7ecf2;
+            border: 1px solid #aaaaaa;
+            border-radius: 2px;
+        }
+
+            .container-gridEdit .cuerpo .scroll .scrroll-bottom:hover {
+                background-color: #c1c7ce;
+            }
+
+
+        .container-gridEdit .cuerpo .scroll .scrroll-desplazo {
+            position: absolute;
+            top: 19px;
+            width: 100%;
+            height: 20px;
+            background-color: #e7ecf2;
+            border: 1px solid #aaaaaa;
+            border-radius: 2px;
+            z-index: 0
+        }
+
+            .container-gridEdit .cuerpo .scroll .scrroll-desplazo:hover {
+                background-color: #c1c7ce;
+            }
+
+    .container-gridEdit .cuerpo .tabla-datos {
+        overflow-x: auto;
+        overflow-y: hidden;
+        /*max-width: 1090px;*/
+        MIN-HEIGHT: 440px;
+        max-height: 450px;
+        width: 100%
+    }
+
+.tabla-cabeza table {
+    background: #cccccc url(../Imagenes/degradeCabezaTablaClaro.png) 50% 50% repeat-x;
+    width: 100%;
+    border: 1px solid #aaaaaa;
+    color: #222222;
+    font-weight: bold;
+}
+
+.tabla-datos .tabla-cabeza {
+}
+
+    .tabla-datos .tabla-cabeza .td-columna {
+        overflow: hidden;
+        border-width: 0;
+    }
+
+.scrroll-top .glyphicon {
+    margin: 1px 2px 4px 3px;
+}
+
+.scrroll-bottom .glyphicon {
+    margin: 1px 4px 4px 3px;
+}
+
+tr .columna-conWidth {
+    height: 0px !important;
+    max-height: 0px !important;
+    padding: 0px;
+    margin: 0px;
+    border: 0px !important;
+}
+
+.pointer:hover {
+    color: #db2c2c;
+    cursor: pointer;
+}
+
+.mt1 {
+    margin-top: 5px;
+}
+
+.pt1 {
+    padding-top: 5px;
+}
+
+#tbl-Flotante {
+    position: absolute;
+    top: 93px;
+    left: 0px;
+    background-color: #ffffff;
+    box-shadow: 0px 0px 5px #a09292;
+}
+
+    /*MUESTRA SELECCION DE CELDA*/
+    #tbl-Flotante tr td {
+        /*min-width: 80px;*/
+        text-align: center;
+        min-height: 30px;
+        height: 20px;
+        border: 1px solid #dcd3d3;
+        font-size: 12px;
+        font-weight: 100;
+    }
+
+    #tbl-Flotante thead {
+        background: #cccccc url(../Imagenes/degradeCabezaTablaClaro.png) 50% 50% repeat-x;
+        width: 100%;
+        border: 1px solid #aaaaaa;
+        color: #222222;
+        font-weight: bold;
+    }
+
+.columnF {
+}
+
+.columnM {
+    text-align: center;
+    min-height: 30px;
+    height: 20px;
+    border: 1px solid #dcd3d3;
+    font-size: 12px;
+    font-weight: 100;
+    display: table-cell;
+}
+
+.cajaConDato {
+    background-color: #92f373;
+}
+
+.celda-modifica {
+    border: 1px solid #dcd3d3;
+}
+
+.ultimaColumna {
+    border-right: 4px solid #716d6d !important;
+}
+
+#txttemporal {
+    border-radius: 0px;
+    margin: 0px !important;
+    height: 17px !important;
+}
+
+#tblProyeccionVentaDetalle tr td {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.table {
+    font-size: smaller !important;
+}
+
+.panel-heading {
+    padding: 6px !important;
+}
+
+.modal-dialog {
+    min-height: calc(100vh - 60px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: auto;
+}
+
+@media(max-width: 768px) {
+    .modal-dialog {
+        min-height: calc(100vh - 20px);
+    }
+}
+
+.w-100 {
+    width: 100%
+}
+
+.bordeSingle {
+    border: solid #bfb9b9 1px;
+}
+
+.minHeingCuadroSeleccion {
+    min-height: 480px;
+    overflow-y: auto;
+    max-height: 480px;
+    text-align: left
+}
+
+.itemSeleccionado {
+    cursor: pointer;
+    color: black;
+}
+
+    .itemSeleccionado:hover {
+        background-color: orange;
+    }
+
+
+.cabeza_Tabla {
+    background-color: #d5dd1f
+}
+
+.btn label {
+    padding: 0px;
+    margin: 0px
+}
+
+.context-producto {
+    cursor: default;
+}
+
+
+.habilitaModificacion {
+    background-color: #fefefe !important;
+    border: 1px solid #dcd3d3 !important;
+}
+
+
+
+#tblDatosProyeccion tr .ui-selecting {
+    background-color: #97d5f5 !important;
+}
+
+#tblDatosProyeccion tr .ui-selected {
+    background-color: #cb7d7d !important;
+    color: black;
+}
+
+.ItemConModificaciones {
+    background-color: #dcd3d3 !important;
+}
+
+
+#tblResumenForeCast tr td {
+    padding: 0px !important
+}
+
+.inner {
+    max-height: 342px !important;
+}
+
+.w-85 {
+    width: 85% !important;
+}
+
+
+.ctr-left {
+    float: left;
+}
+
+.ctr-right {
+    float: right;
+}
+
+.btn-remove-Filtro {
+    height: 28px;
+}
+
+.filtro-activado {
+    color:red !important;
+}
+
+.w-15 {
+    width: 15% !important;
+}
+
+.conValores {
+    background-color: #e6c588;
+}
+
+#divLogin {
+    margin: auto;
+    /*width: 1200px;
+    position: absolute;
+    left: 50%;
+    margin-left: -600px;*/
+}

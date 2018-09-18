@@ -1,0 +1,45 @@
+﻿<div class="modal-header warning">
+    <small>Nueva subida de archivos</small>
+</div>
+<div class="modal-body" id="cuerpoContenidoMovimientos" style="min-height:350px;overflow-y:auto">
+    <div class="row">
+        <div class="col-md-2 pt1 text-right">
+            <label>Tipo archivo: </label>
+        </div>
+        <div class="col-md-4">
+            @Html.DropDownList("ddlTipoArchivo", ((SelectList)ViewBag.LstTipoArchivo).ToList(), new { @class = "form-control form-control-sm-cm-x" })
+        </div>
+    </div>
+    <div class="row pt1">
+        <div class="col-md-2 pt1 text-right">
+            <label>Fecha archivo: </label>
+        </div>
+        <div class="col-md-4">
+            @Html.TextBox("txtFechaArchivo", DateTime.Now.ToString("MM/dd/yyyy"), new { @class = "form-control form-control-smx w-100 date" })
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2 pt1 text-right">
+            <label>Observaciones: </label>
+        </div>
+        <div class="col-md-10 pt1 text-left">
+            @Html.TextBox("txtObservaciones", string.Empty, new { @placeHolder = "--Observaciones del archivo --", @class = "form-control form-control-sm W-100", @style = "height:30px !important" })
+        </div>
+    </div>
+    <div class="row pt1">
+        <div class="col-md-2 pt1 text-right">
+            <label>Archivo: </label>
+        </div>
+    </div>
+    <div class="row pt1">
+        <div class="col-md-12">
+            <input id="fileArchivos" name="fileArchivos []" multiple type="file" class="file" data-allowed-file-extensions='["csv", "txt"]'>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <div class="col-md-5"></div>
+    <div class="col-md-2">
+        <input type="button" class="btn btn-sm w-100" data-dismiss="modal" value="Cerrar" />
+    </div>
+</div>

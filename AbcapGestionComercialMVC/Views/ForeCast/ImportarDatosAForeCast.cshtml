@@ -1,0 +1,112 @@
+﻿@using (Html.BeginForm("procesarImportacionDatos", "ForeCast", FormMethod.Post, new { id = "fmrIniciaImportacionDatos" }))
+{
+    <div class="modal-header">
+        Importar datos
+        @Html.Hidden("hdfIDForeCast", (long)ViewBag.IDForeCast)
+        @Html.Hidden("hdfCanal", (string)ViewBag.Canal)
+        @Html.Hidden("hdfIdModificacion",(string)ViewBag.IDModificacion)
+    </div>
+    if (ViewBag.AnioInicial != null)
+    {
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <strong>Información general</strong>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2 text-right">
+                    Canal:
+                </div>
+                <div class="col-md-2 text-right">
+                    @ViewBag.Canal
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <strong>Configuración de importación</strong>
+                </div>
+            </div>
+            <div class="row mt1">
+                <div class="col-md-3 text-right">
+                    <small>Fecha inicial: </small>
+                </div>
+                <div class="col-md-1 text-right">
+                    <small>Año: </small>
+                </div>
+                <div class="col-md-3">
+                    @Html.DropDownList("ddlAnoInicialImport", ((SelectList)ViewBag.AnioInicial).ToList(), new { @class = "form-control form-control-cmb-sm", @onChange = "cargaSemanaPorAnio(this,'#ddlSemanaInicialImport');" })
+                </div>
+                <div class="col-md-2 text-right">
+                    <small>Semana: </small>
+                </div>
+                <div class="col-md-3">
+                    @Html.DropDownList("ddlSemanaInicialImport", ((SelectList)ViewBag.SemanasInicial).ToList(), new { @class = "form-control form-control-cmb-sm" })
+                </div>
+            </div>
+            <div class="row mt1">
+                <div class="col-md-3 text-right">
+                    <small>Fecha Final: </small>
+                </div>
+                <div class="col-md-1 text-right">
+                    <small>Año: </small>
+                </div>
+                <div class="col-md-3">
+                    @Html.DropDownList("ddlAnoFinalImport", ((SelectList)ViewBag.AnioFinal).ToList(), new { @class = "form-control form-control-cmb-sm", @onChange = "cargaSemanaPorAnio(this,'#ddlSemanaFinalImport');" })
+                </div>
+                <div class="col-md-2 text-right">
+                    <small>Semana: </small>
+                </div>
+                <div class="col-md-3">
+                    @Html.DropDownList("ddlSemanaFinalImport", ((SelectList)ViewBag.SemanasFinal).ToList(), new { @class = "form-control form-control-cmb-sm" })
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <strong>Tipo de importación</strong>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input type="radio" name="chkOpcion" checked="checked" id="rbnRealVentas" value="VERE" /><small> Datos reales de ventas</small>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input type="radio" name="chkOpcion" id="rbnRealVentas" value="ARCH" /><small> Desde archivo</small>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2"></div>
+                        <div class="col-md-10">
+                            @Html.DropDownList("ddlArchivoImportar", ((SelectList)ViewBag.lstArchivosConsolidados).ToList(), new { @class = "form-control form-control-sm-cmx w-100" })
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input type="radio" name="chkOpcion" id="rbnRealVentas" value="COTI" disabled="disabled" /><small>Directamente del cotizador</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <div class="modal-footer">
+        <div class="col-md-3"></div>
+        <div class="col-md-2">
+            <div class="btn btn-sm btn-default" data-dismiss="modal">
+                Cancelar
+                <span class="glyphicon glyphicon-remove-circle"></span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="btn btn-sm btn-success" onclick="iniciaImportacionDatos();">
+                Iniciar importación de datos
+                <span class="glyphicon glyphicon-ok-circle"></span>
+            </div>
+        </div>
+    </div>
+}

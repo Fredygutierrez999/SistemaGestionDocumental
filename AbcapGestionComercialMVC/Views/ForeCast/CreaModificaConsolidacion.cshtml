@@ -1,0 +1,110 @@
+﻿@using AbcapGestionComercialMVC.Models.Clases.ForeCast
+@model clsAppNetConsolidacion_Encabezado
+@using (Html.BeginForm("GuardarConsolidacion", "ForeCast", FormMethod.Post, new { @id = "fmrConsolidacionForeCast" }))
+{
+    <div class="modal-header">
+        <div class="modal-title">Administración de consolidación de Forecast/ Proyección</div>
+    </div>
+    <div class="modal-body">
+        @Html.Hidden("hdfID",Model.ID)
+        @Html.Hidden("HdfForeCastSeleccionado")
+        <div class="row pt1">
+            <div class="col-md-2 text-right">
+                <label>Id: </label>
+            </div>
+            <div class="col-md-2">
+                @Html.TextBoxFor(m => m.ID, new { @class = "form-control form-control-smX", @ReadOnly = "ReadOnly" })
+            </div>
+        </div>
+        <div class="row pt1">
+            <div class="col-md-2 text-right">
+                <label>Nombre: </label>
+            </div>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control form-control-smX", @ReadOnly = "ReadOnly" })
+            </div>
+        </div>
+        <div class="row pt1">
+            <div class="col-md-2 text-right">
+                <label>Descripción: </label>
+            </div>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Descripcion, new { @class = "form-control form-control-smX" })
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-md-4 text-left">
+                <label>Ítems a consolidar</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-condensed table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <td>
+                                Sel.
+                            </td>
+                            <td>
+                                ID
+                            </td>
+                            <td>
+                                Nombre
+                            </td>
+                            <td>
+                                Tipo ForeCast
+                            </td>
+                            <td>
+                                Fecha de creación
+                            </td>
+                            <td>
+                                Estado
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (clsAppNetConsolidacion_Detalle_ForeCast objItem in Model.lstForeCast)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.RadioButton("chkSelec", objItem.Seleccionado, new { @NOmbre = objItem.objAppNetProyeccionForeCast.Nombre, @class = "chkSelec", @onclick = "generarNombreConsolidado();", @Valor = objItem.objAppNetProyeccionForeCast.ID })
+                                </td>
+                                <td>@objItem.objAppNetProyeccionForeCast.ID</td>
+                                <td>@objItem.objAppNetProyeccionForeCast.Nombre</td>
+                                <td>@objItem.objAppNetProyeccionForeCast.Bas_TipoDatoPYG.Nombre</td>
+                                <td>@objItem.objAppNetProyeccionForeCast.FechaCreacion.ToString("MM/dd/yyyy hh:mm:ss")</td>
+                                <td>@objItem.objAppNetProyeccionForeCast.EstadoObj.Nombre</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-3 text-right">
+                <label>Estado:</label>
+            </div>
+            <div class="col-md-3">
+                @Html.DropDownList("ddlEstado", ((SelectList)ViewBag.Estados).ToList(), new { @class = "form-control form-control-cmb-sm w-100", @disabled = "disabled" })
+            </div>
+        </div>
+        <div class="row pt1">
+            <div class="col-md-3"></div>
+            <div class="col-md-3 text-right">
+                <div class="btn btn-sm btn-default w-100" data-dismiss="modal">
+                    Cancelar
+                    <span class="glyphicon glyphicon-remove-circle"></span>
+                </div>
+            </div>
+            <div class="col-md-3 text-right">
+                <div class="btn btn-sm btn-success w-100" onclick="guardarModificarConsolidacion();">
+                    Aceptar
+                    <span class="glyphicon glyphicon-ok-circle"></span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+}

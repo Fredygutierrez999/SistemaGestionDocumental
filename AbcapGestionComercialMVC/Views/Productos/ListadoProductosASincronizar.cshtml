@@ -1,0 +1,54 @@
+﻿@using AbcapGestionComercialMVC.Models.Clases.Productos
+@model List<clsProductosSincronizacion>
+@if (Model.Count > 0)
+{
+    <div class="panel-heading">
+        Resultado <span class="badge">@Model.Count</span>
+    </div>
+    <div class="panel-body">
+        <table class="table table-condensed table-hover">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Revisión</th>
+                    <th>Nombre producto</th>
+                    <th>Clasificación</th>
+                    <th>Presentación</th>
+                    <th>Tipo producto</th>
+                    <th><input type="checkbox" value="-1" /> Proceso</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (clsProductosSincronizacion objItem in Model)
+                {
+                    <tr>
+                        <td>
+                            <a href="javascript:VerRecetaProducto(@objItem.ID)" ;>
+                                @objItem.Codigo
+                            </a>
+                        </td>
+                        <td>@objItem.Revision</td>
+                        <td>@objItem.Nombre</td>
+                        <td>@objItem.NombreClasificacion</td>
+                        <td>@objItem.NombrePresentacion</td>
+                        <td>@objItem.NombreTipoProducto</td>
+                        <td>
+                            <input type="checkbox" value="@objItem.ID" />
+                            <a href="javascript:DescargarProducto(@objItem.ID);">
+                                <span class="glyphicon glyphicon-download"></span>
+                                Descargar
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-danger">
+        Sin datos para sincronizar
+    </div>
+}
+

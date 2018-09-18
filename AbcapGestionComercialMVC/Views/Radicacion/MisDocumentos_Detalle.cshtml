@@ -1,0 +1,51 @@
+﻿@using GestionDocumental.Models.Clases.Radicacion
+@model List<clsAppNetDocumentos>
+
+<table class="table table-condensed table-hover table-responsive table-bordered">
+    <thead>
+        <tr>
+            <td>ID</td>
+            <td>N. Documento</td>
+            <td>Fecha Documento</td>
+            <td>Fecha Radicación</td>
+            <td>Fecha Creación</td>
+            <td>Emisor</td>
+            <td>Usuario creación</td>
+            <td>Usuario modificación</td>
+            <td>Último Mov.</td>
+            <td class="text-center">
+                <span class="glyphicon glyphicon-file"></span>
+            </td>
+            <td class="text-center">
+                <span class="glyphicon glyphicon-list"></span>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (clsAppNetDocumentos objItem in Model)
+        {
+            <tr>
+                <td>
+                    <a href="Index?IDDocumento=@objItem.ID">
+                        @objItem.ID
+                    </a>
+                </td>
+                <td>@objItem.NumeroDocumento</td>
+                <td>@objItem.FechaDocumento.ToString("MM/dd/yyyy")</td>
+                <td>@objItem.FechaRecepcion.ToString("MM/dd/yyyy")</td>
+                <td>@objItem.FechaCreacion.ToString("MM/dd/yyyy")</td>
+                <td>Emisor</td>
+                <td>@objItem.AppNetUsuariosCreacion.Nombre</td>
+                <td>@objItem.AppNetUsuariosModificacion.Nombre</td>
+                <td>@objItem.FechaModificacion.ToString("MM/dd/yyyy")</td>
+                <td class="text-center">
+                    <span class="glyphicon glyphicon-file pointer" style="color:brown" onclick="verSoportesDocumentos(@objItem.ID,'@Json.Encode(@objItem.lstSoportes)');" ></span>
+                    <span class="badge">@objItem.lstSoportes.Count</span>
+                </td>
+                <td class="text-center">
+                    <span class="glyphicon glyphicon-list pointer" onclick="consultarMovimiento(@objItem.ID)" style="color:brown"></span>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

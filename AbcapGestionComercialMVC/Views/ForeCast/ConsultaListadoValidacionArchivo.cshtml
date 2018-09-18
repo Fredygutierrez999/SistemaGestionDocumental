@@ -1,0 +1,43 @@
+﻿@using AbcapGestionComercialMVC.Models.Clases.ForeCast
+@model List<clsAppNetProyeccionForeCast_Archivos_Validaciones>
+<div class="panel">
+    <div class="panel-heading">
+        <label>
+            Listado de validaciones
+        </label>
+    </div>
+    <div class="panel-body" style="max-height:450px; overflow-y:auto">
+        <table class="table table-condensed table-hover">
+            <thead>
+                <tr>
+                    <td>
+                        Descripción
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (clsAppNetProyeccionForeCast_Archivos_Validaciones objItem in Model)
+                {
+                    <tr>
+                        <td>
+                            @objItem.Nombre
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="panel-footer">
+        <div class="row">
+            <div class="col-md-5">
+
+            </div>
+            <div class="col-md-2">
+                <div class="btn btn-sm btn-default w-100" data-dismiss="modal">
+                    Cerrar
+                    <span class="glyphicon glyphicon-remove-circle"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,32 @@
+﻿@using AbcapGestionComercialMVC.Models.Clases
+@model clsConsultaProyeccionFiltros
+@using (Html.BeginForm("busquedaProyeccion", "ControlProyeccion", FormMethod.Get, new { ID = "fmrConsultaProyecciones" }))
+{
+    <div class="modal-header">
+        <h5 class="modal-title">Consulta de proyecciones</h5>
+    </div>
+    <div class="modal-body">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2">
+                    <label>Proyección: </label>
+                </div>
+                <div class="col-md-10">
+                    @Html.DropDownList("ddlProyeccionVenta", Model.lstProyecciones, new { Class = "form-control form-control-cmb-sm", style = "Widht:100%" })
+                </div>
+            </div>
+            <div class="row mt1">
+                <div class="col-md-2">
+                    <label>Canal: </label>
+                </div>
+                <div class="col-md-3">
+                    @Html.DropDownList("ddlCanal", Model.lstCanal, new { Class = "form-control form-control-cmb-sm", style = "Widht:100%" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Cerrar</button>
+        <button type="submit" class="btn btn-sm btn-primary">Consultar</button>
+    </div>
+}

@@ -1,0 +1,241 @@
+﻿@using AbcapGestionComercialMVC.Models.Clases.ForeCast
+@model clsAppNetProyeccionForeCast_Filtro
+@{
+    ViewBag.Title = "Consulta ForeCast";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <div class="panel-title">
+            <div class="row">
+                <div class="col-md-2 pt1">
+                    Consulta de ForeCast
+                </div>
+                <div class="col-md-2">
+                    <input type="button" class="btn btn-sm btn-success" onclick="CreaModificaForeCast(0);" value="Crear nueva ForeCast" />
+                </div>
+            </div>
+        </div>
+    </div>
+    @using (Html.BeginForm("consultaDetalle", "ForeCast", FormMethod.Post, new { @Id = "fmrConsultaForeCast" }))
+    {
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-1 text-right">
+                    <label>ID:</label>
+                </div>
+                <div class="col-md-1 text-right">
+                    @Html.TextBoxFor(m => m.IDF, new { @class = "form-control form-control-smX" })
+                </div>
+                <div class="col-md-1 text-right">
+                    <label>Nombre:</label>
+                </div>
+                <div class="col-md-3 text-right">
+                    @Html.TextBoxFor(m => m.NombreF, new { @class = "form-control form-control-smX" })
+                </div>
+                <div class="col-md-2 text-right">
+                    <label>Tipo Dato:</label>
+                </div>
+                <div class="col-md-3 text-right">
+                    @Html.DropDownListFor(m => m.BasTipoDatoPyGF.ID, ((SelectList)ViewBag.ListadoTipoDato).ToList(), new { @class = "form-control form-control-cmb-sm" })
+                </div>
+            </div>
+            <div class="row pt1">
+                <div class="col-md-1 text-right">
+                    <label>Estado:</label>
+                </div>
+                <div class="col-md-2 text-right">
+                    @Html.DropDownListFor(m => m.BasEstadoProyeccionF.ID, ((SelectList)ViewBag.EstadosProyeccion).ToList(), new { @class = "form-control form-control-cmb-sm" })
+                </div>
+                <div class="col-md-7 text-right">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-5 text-right">
+                </div>
+                <div class="col-md-2 ">
+                    <input type="button" class="btn btn-sm btn-success w-100" onclick="ConsultaForeCast();" value="Consultar" />
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<div class="panel" id="DetalleForeCast">
+
+</div>
+
+@* Popup parala administración de roles *@
+<div class="modal modal-sm fade" id="popupAdministrarForeCast" tabindex="-1" data-backdrop="static" data-keyboard="false" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" id="cuerpoAdministraForeCast">
+
+        </div>
+    </div>
+</div>
+
+
+@* Popup para la consulta de movimientos ForeCast *@
+<div class="modal fade" id="popupMoviemtosForeCast" tabindex="-1" data-backdrop="static" data-keyboard="false" role="dialog">
+    <div class="modal-dialog " style="width:70%" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                Movimientos ForeCast
+            </div>
+            <div class="modal-body" id="cuerpoContenidoMovimientos" style="max-height:400px;overflow-y:auto">
+
+            </div>
+            <div class="modal-footer">
+                <div class="col-md-5"></div>
+                <div class="col-md-2">
+                    <input type="button" class="btn btn-sm w-100" data-dismiss="modal" value="Cerrar" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@* Popup para la consulta de archivos del ForeCast *@
+<div class="modal fade" id="popupArchivosForeCast" tabindex="-1" data-backdrop="static" data-keyboard="false" role="dialog">
+    <div class="modal-dialog " style="width:80%" role="document">
+        <div class="modal-content" id="ContenidoAdministracionArchivos">
+        </div>
+    </div>
+</div>
+
+
+@* Popup para la consulta de archivos del ForeCast *@
+<div class="modal fade" id="popupSubirArchivoNuevo" tabindex="-1" data-backdrop="static" data-keyboard="false" role="dialog">
+    <div class="modal-dialog " style="width:60%" role="document">
+        <div class="modal-content" id="SubirArchivonuevo">
+        </div>
+    </div>
+</div>
+
+@* Popup para la consulta de archivos del ForeCast *@
+<div class="modal fade" id="popupSeleccionarArchivoPrincipalWC" tabindex="-1" data-backdrop="static" data-keyboard="false" role="dialog">
+    <div class="modal-dialog " style="width:60%" role="document">
+        <div class="modal-content" id="SeleccionarPrincipalArchivoWC">
+        </div>
+    </div>
+</div>
+
+
+@* Popup para la consulta de archivos del ForeCast *@
+<div class="modal fade" id="popupValidacionesArchivo" tabindex="-1" data-backdrop="static" data-keyboard="false" role="dialog">
+    <div class="modal-dialog " style="width:60%" role="document">
+        <div class="modal-content" id="cuerpoValidacionesArchivo">
+
+        </div>
+    </div>
+</div>
+
+
+@* Popup para la consulta de tipo de exportacion del ForeCast *@
+<div class="modal fade" id="popupTipoExportacionExcel" tabindex="-1" data-backdrop="static" data-keyboard="false" role="dialog">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content" id="cuerpoTipoExportacionExcel">
+
+        </div>
+    </div>
+</div>
+
+
+@* Popup para la consulta de tipo de exportacion del ForeCast *@
+<div class="modal fade" id="popupExportacionAbcap" tabindex="-1" data-backdrop="static" data-keyboard="false" role="dialog">
+    <div class="modal-dialog" style="width:80%" role="document">
+        <div class="modal-content" id="cuerpoExportacionAbcap">
+
+        </div>
+    </div>
+</div>
+
+
+@* Popup para la consulta de tipo de exportacion del ForeCast *@
+<div class="modal fade" id="popupGenerarGrafica" tabindex="-1" data-backdrop="static" data-keyboard="false" role="dialog">
+    <div class="modal-dialog " style="width:80%" role="document">
+        <div class="modal-content" id="cuerpopopupGenerarGrafica">
+
+        </div>
+    </div>
+</div>
+
+
+@* Popup para la consulta de tipo de exportacion del ForeCast *@
+<div class="modal fade" id="popupDetalleErroresResumen" tabindex="-1" data-backdrop="static" data-keyboard="false" role="dialog">
+    <div class="modal-dialog " style="width:60%" role="document">
+        <div class="modal-content" id="cuerpoDetalleErroresResumen">
+
+        </div>
+    </div>
+</div>
+
+
+@* Popup para la consulta de archivos del ForeCast *@
+<div class="modal fade" id="popupvalidacionEliminacion" tabindex="-1" data-backdrop="static" data-keyboard="false" role="dialog">
+    <div class="modal-dialog " style="width:60%" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                Validación de eliminación
+            </div>
+            <div class="modal-body">
+                ¿Esta usted seguro de eliminar los datos de la consolidación?
+            </div>
+            <div class="modal-footer">
+                <div class="col-md-3"></div>
+                <div class="col-md-3">
+                    <div class="btn btn-sm btn-default w-100" data-dismiss="modal">
+                        Cancelar
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="btn btn-sm btn-danger w-100" onclick="eliminarConsolidacionArchivo();" data-dismiss="modal">
+                        Eliminar
+                        <span class="glyphicon glyphicon-floppy-remove"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@* Popup para la validacion de exportacion *@
+<div class="modal fade" id="popupValidacionExportacion" tabindex="-1" data-backdrop="static" data-keyboard="false" role="dialog">
+    <div class="modal-dialog " style="width:60%" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                Validación de exportación
+            </div>
+            <input type="hidden" id="hdfIDForeCast" value="0" />
+            <div class="modal-body">
+                ¿Esta usted seguro de exportar los datos a Abcap Gestión Comercial ?
+            </div>
+            <div class="modal-footer">
+                <div class="col-md-3"></div>
+                <div class="col-md-3">
+                    <div class="btn btn-sm btn-default w-100" data-dismiss="modal">
+                        Cancelar
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="btn btn-sm btn-danger w-100" onclick="aceptarExportacionAbcapGestionComercial();" data-dismiss="modal">
+                        Exportar
+                        <span class="glyphicon glyphicon-ok-circle"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript" src="~/Scripts/ViewsJS/ControlForeCast.js?version=07312018"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        ConsultaForeCast();
+        $('#popupAdministrarForeCast').on('show.bs.modal', function (e) {
+            cargaNombreAutomaticoForeCast();
+        });
+    });
+</script>

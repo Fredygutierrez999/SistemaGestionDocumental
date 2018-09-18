@@ -1,0 +1,85 @@
+﻿@using AbcapGestionComercialMVC.Models.Clases.ForeCast
+@model clsAppNetProyeccionForeCast_Filtro
+@{
+    ViewBag.Title = "Consolidacion";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <div class="panel-title">
+            <div class="row">
+                <div class="col-md-3 pt1">
+                    Consolidación y validación
+                </div>
+                <div class="col-md-2">
+                    <div class="btn btn-sm btn-success" onclick="CreaModificaConsolidacion(-1);">
+                        Nueva consolidacion
+                        <span class="glyphicon glyphicon-compressed"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @using (Html.BeginForm("consultaDetalle", "ForeCast", FormMethod.Post, new { @Id = "fmrConsultaConsolidacion" }))
+    {
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-2 text-right ">
+                    <label>ID:</label>
+                </div>
+                <div class="col-md-1">
+                    @Html.TextBoxFor(m => m.IDF, string.Empty, new { @class = "form-control form-control-smX" })
+                </div>
+                <div class="col-md-1 text-right">
+                    <label>Nombre:</label>
+                </div>
+                <div class="col-md-7">
+                    @Html.TextBoxFor(m => m.NombreF, string.Empty, new { @class = "form-control form-control-smX" })
+                </div>
+            </div>
+        </div>
+    }
+    <div class="panel-footer">
+        <div class="row">
+            <div class="col-md-5"></div>
+            <div class="col-md-2">
+                <div class="btn btn-sm btn-success w-100" onclick="consultarListadoCOnsolidado();">
+                    Consultar <span class="glyphicon glyphicon-ok-circle"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="panel" id="DetalleConsolidacion">
+
+</div>
+
+
+@* Popup para la consulta de archivos del ForeCast *@
+<div class="modal fade" id="popupCreaModificaConsolidacion" tabindex="-1" data-backdrop="static" data-keyboard="false" role="dialog">
+    <div class="modal-dialog " style="width:40%" role="document">
+        <div class="modal-content" id="cuerpoCreaModificaConsolidacion">
+
+        </div>
+    </div>
+</div>
+
+@* Popup para la consulta de archivos del ForeCast *@
+<div class="modal fade" id="popupValidacionesConsolidado" tabindex="-1" data-backdrop="static" data-keyboard="false" role="dialog">
+    <div class="modal-dialog " style="width:60%" role="document">
+        <div class="modal-content" id="cuerpoValidacionesConsolidado">
+
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript" src="~/Scripts/ViewsJS/ControlConsolidacion.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        consultarListadoCOnsolidado();
+    });
+</script>

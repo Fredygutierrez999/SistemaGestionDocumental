@@ -1,0 +1,33 @@
+﻿<div class="modal-header">
+    <div class="modal-title">
+        Exportar productos proyectados <span class="glyphicon glyphicon-file"></span>
+    </div>
+</div>
+<div class="modal-body">
+    @using (Html.BeginForm("", "", FormMethod.Get, new { @ID = "fmrExportarDatosExcel" }))
+    {
+        @Html.Hidden("hdfIDForeCsa", (long)ViewBag.IDForeCast)
+        @Html.Hidden("hdfTipoArchivo", (string)ViewBag.TipoArchivo)
+        <div class="row pt1">
+            <div class="col-md-3 text-right">
+                <label>Tipo archivo:</label>
+            </div>
+            <div class="col-md-9">
+                @Html.DropDownList("ddlTipoExportacionArchivo", ((SelectList)ViewBag.TipoArchivoExportacion).ToList(), new { @class = "form-control form-control-cmb-sm w-100" })
+            </div>
+        </div>
+    }
+</div>
+<div class="modal-footer">
+    <div class="col-md-2"></div>
+    <div class="col-md-4">
+        <div class="btn btn-sm btn-default w-100" data-dismiss="modal">
+            Cancelar <span class="glyphicon glyphicon-remove-circle"></span>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="btn btn-sm btn-success w-100" onclick="DescargarListadoExcelProducto();">
+            Descargar Excel <span class="glyphicon glyphicon-download"></span>
+        </div>
+    </div>
+</div>

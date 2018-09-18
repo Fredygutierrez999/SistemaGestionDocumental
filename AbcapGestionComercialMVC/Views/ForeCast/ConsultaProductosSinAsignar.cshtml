@@ -1,0 +1,106 @@
+﻿<style>
+    #tblCuerpoProductos tr td {
+        padding: 2px
+    }
+</style>
+<div class="panel-heading">
+    <label>Agregar productos a ForeCast / proyección</label>
+</div>
+<div class="panel-body">
+    <div class="row">
+        <div class="col-md-3 text-right">
+            <small>Canal:</small>
+        </div>
+        <div class="col-md-9">
+            @Html.DropDownList("ddlCanalFiltro", ((SelectList)ViewBag.Canales).ToList(), new { @Class = "form-control form-control-cmb-sm W-100", @onchange = "seleccionarCanalFiltro(this);" })
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 text-right">
+            <strong>Productos a proyectar: </strong><span id="lblCantidadProductos" class="badge">0</span>
+        </div>
+    </div>
+    <div class="row pt1">
+        <div class="col-md-1 text-right"></div>
+        <div class="col-md-2 text-right  pt1">
+            <small>Filtrar: </small>
+        </div>
+        <div class="col-md-7">
+            @Html.TextBox("txtFiltro", "", new { @Class = "form-control w-100" })
+        </div>
+        <div class="col-md-1 text-right">
+            <div class="btn btn-success btn-sm" onclick="consultaListadoProductosSinAsignar()">
+                Buscar...
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-md-10">
+            <table class="table table-condensed table-responsive" style="min-height:350px;height:350px;margin: 0px !important;">
+                <thead>
+                    <tr>
+                        <td style="width:30px">
+                            Sel.
+                        </td>
+                        <td style="width:130px">
+                            Código
+                        </td>
+                        <td style="width: 70%;">
+                            Nombre producto caja
+                        </td>
+                        <td>
+                            Versión
+                        </td>
+                    </tr>
+                </thead>
+            </table>
+            <div style="max-height:300px;overflow-y:auto;border:1px solid #808080;">
+                <table class="table table-condensed table-responsive table-hover" style="margin: 0px !important;">
+                    <tbody id="tblCuerpoProductos"></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <table class="table table-condensed table-responsive" style="min-height:350px;height:350px;margin: 0px !important;">
+                <thead>
+                    <tr>
+                        <td>
+                            Seleccionados <span id="lblCantidadProductosSeleccionados" class="badge">0</span>
+                        </td>
+                    </tr>
+                </thead>
+            </table>
+            <div style="max-height:300px;height:300px;overflow-y:auto;border:1px solid #808080;">
+                <table class="table table-condensed table-responsive table-hover" style="margin: 0px !important;">
+                    <tbody id="tblProductosSeleccionaos" >
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row pt1">
+        <div class="col-md-3 text-right pt1">
+            <small>Cliente a proyectar:</small>
+        </div>
+        <div class="col-md-9">
+            @Html.DropDownList("ddlCliente", ((SelectList)ViewBag.Clientes).ToList(), new { @Class = "form-control form-control-cmb-sm W-100" })
+        </div>
+    </div>
+</div>
+<div class="panel-footer">
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-3">
+            <div class="btn btn-sm btn-default w-100" data-dismiss="modal">
+                Cancelar <span class="glyphicon glyphicon-remove-circle"></span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="btn btn-sm btn-success w-100" onclick="agregarProductosAproyectar();">
+                Agregar productos <span class="glyphicon glyphicon-ok-circle"></span>
+            </div>
+        </div>
+    </div>
+</div>

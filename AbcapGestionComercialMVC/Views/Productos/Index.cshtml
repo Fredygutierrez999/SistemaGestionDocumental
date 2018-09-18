@@ -1,0 +1,99 @@
+﻿@{
+    ViewBag.Title = "Productos a actualizar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using (Html.BeginForm("ListadoProductosASincronizar", "Productos", FormMethod.Post, new { Id = "fmrBuscarProductosASincronizar" }))
+{
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <div class="panel-title">Productos nuevos en producción</div>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-2 text-right">
+                    <label>Codigo:</label>
+                </div>
+                <div class="col-md-2">
+                    @Html.TextBox("txtCodigo", "", new { @class = "form-control form-control-smX" })
+                </div>
+                <div class="col-md-1 text-right">
+                    <label>Nombre:</label>
+                </div>
+                <div class="col-md-3">
+                    @Html.TextBox("txtNombre", "", new { @class = "form-control form-control-smX" })
+                </div>
+            </div>
+            <hr />
+            <div class="row pt1">
+                <div class="col-md-5"></div>
+                <div class="col-md-2">
+                    <input type="button" class="btn btn-sm btn-success w-100" onclick="buscarProductos();" value="Buscar" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <span class="alert alert-warning">
+                El producto que usted desea sincronizar debe poseer el mismo Nombre, Codigo, Tipo producto y versión en Abcap_envios producción.
+            </span>
+        </div>
+    </div>
+</div>
+<br />
+<div class="container" id="divDetalleProductosSincronizados">
+</div>
+
+@* Popup parala administración de roles *@
+<div class="modal modal-sm fade" id="popupDescargaProducto" tabindex="-1" data-backdrop="static" data-keyboard="false" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" id="CuerpoDescargaProducto">
+            <div class="modal-header">
+                Descarga
+            </div>
+            <div class="modal-body">
+                Descargando producto a proyección...
+            </div>
+            <div class="modal-header">
+                <div class="row">
+                    <div class="col-md-5"></div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-sm btn-default w-100" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@* Popup parala administración de roles *@
+<div class="modal modal-sm fade" id="popupVerRecetaProducto" tabindex="-1" data-backdrop="static" data-keyboard="false" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" id="CuerpoVerRecetaProducto">
+            <div class="modal-header">
+                Descarga
+            </div>
+            <div class="modal-body">
+                Consultando receta producto...
+            </div>
+            <div class="modal-header">
+                <div class="row">
+                    <div class="col-md-5"></div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-sm btn-default w-100" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="~/Scripts/ViewsJS/ControlProductos.js?version=07182018"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        buscarProductos();
+    });
+</script>

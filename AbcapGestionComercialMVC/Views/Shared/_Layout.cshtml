@@ -1,0 +1,163 @@
+﻿@using AbcapGestionComercialMVC.Models.Clases.Seguridad;
+@{
+    clsAppNetUsuarios objUsuario = (clsAppNetUsuarios)Session["UserData"];
+    string strCanales = string.Empty;
+    if (objUsuario != null)
+    {
+        objUsuario.Roles.ForEach(delegate (clsAppNetRoles objRol)
+        {
+            if (objRol.TipoRol.MostrarComboCanal == true)
+            {
+                strCanales += (strCanales == string.Empty ? "" : "<br/> ") + objRol.Nombre;
+            }
+        });
+        if (strCanales == string.Empty)
+        {
+            strCanales = "Vacio";
+        }
+    }
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/x-icon" href="~/Tree.ico" />
+    <title>@ViewBag.Title - Gestión Documental</title>
+
+    <link rel="stylesheet" href="~/Content/jquery-ui.css" />
+
+    <link rel="stylesheet" href="/Content/bootstrap.css" />
+    <link rel="stylesheet" href="/Content/bootstrap-datetimepicker.css" />
+    <link rel="stylesheet" href="/Content/bootstrap-dropdown-checkbox.css" />
+    <link rel="stylesheet" href="/Content/jquery.dataTables.min.css" />
+    <link rel="stylesheet" href="/Content/fixedColumns.dataTables.min.css" />
+    <link rel="stylesheet" href="/Content/bootstrap-select.min.css" />
+    <link rel="stylesheet" href="/Content/site.css" />
+    <link rel="stylesheet" href="/Content/fileinput.css" />
+    <link rel="stylesheet" href="~/Content/Contextual/jquery.contextMenu.min.css" />
+    <link rel="stylesheet" href="~/Content/StyleEscanerDocumental.css" />
+    <script src="/Scripts/modernizr-2.6.2.js"></script>
+</head>
+<body>
+
+    @if (Session.Count > 0)
+    {
+        <div class="navbar navbar-default navbar-fixed-top navbar-inverse ">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    @Html.ActionLink("Gestión Comercial", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        @Html.Raw(File.ReadAllText(((clsAppNetUsuarios)Session["UserData"]).CadenaMenuUsuario))
+                        @if (Session.Count > 0)
+                        {
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">@Html.Raw(objUsuario.Nombre)<span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li class="dropdown-header"><strong>Usuario:</strong><br /> @Html.Raw(objUsuario.UserName)</li>
+                                    <li class="dropdown-header"><strong>Correo:</strong><br /> @Html.Raw(objUsuario.CorreoElectronico)</li>
+                                    <li class="dropdown-header"><strong>Canales asignados:</strong><br /> @Html.Raw(strCanales)</li>
+                                    <li role="separator" class="divider"></li>
+                                    <li class="dropdown-header">Sesión</li>
+                                    <li><a href="../Seguridad/CerrarSession">Cerrrar sesión</a></li>
+                                </ul>
+                            </li>
+                            /**/
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+
+    }
+
+    <script type="text/javascript" src="/Scripts/jquery-1.10.2.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery-ui.js"></script>
+    <script type="text/javascript" src="~/Scripts/GeneradorGraficas/Chart.bundle.js?Version=20180711"></script>
+    <script type="text/javascript" src="~/Scripts/GeneradorGraficas/utils.js?Version=20180711"></script>
+    <script type="text/javascript" src="~/Scripts/ViewsJS/ControlRadicacion.js?Version=20180711"></script>
+
+    <div class="@Html.Raw((ViewBag.pantallaCompleta == null?"container":"")) body-content pt1">
+        @RenderBody()
+    </div>
+
+
+    @* FRAGMENTO HTML PARA POPUP *@
+    <div class="modal" id="popupMuestra" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" z-index="1000000">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content" style="box-shadow: 4px 3px 20px 5px;margin: 10px;z-index:10000000">
+                <div class="modal-header bg-warning" id="popupHeaderGenerico">
+                    <h5 class="modal-title" id="TituloPopupMensajeGenerico"></h5>
+                    <button type="button" class="close " data-dismiss="modal" aria-label="Close" style="display:none">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="contenidoPopupMensajeGenerico" style="padding: 5px 20px 0px 0px;">
+
+                </div>
+                <div class="modal-footer p-2">
+                    <button id="btnAceptarSiMensajeGenerico" onclick="return eventoAceptarSi();" tabindex="1" type="button" class="btn btn-sm" style="padding:2px">Aceptar</button>
+                    <button id="btnCancelarNoSiMensajeGenerico" style="display:none" onclick="return eventoCancelarNoSi();" tabindex="2" type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    @* FRAGMENTO HTML PARA POPUP VISUALIZAR ARCHIVOS *@
+    <div class="modal" id="popupMuestraArchivo" tabindex="-1" role="dialog" z-index="1000000">
+        <div class="modal-dialog" id="popupDialogArchivo" style="width:40%"  role="document">
+            <div class="modal-content" style="box-shadow: 4px 3px 20px 5px;margin: 10px;z-index:10000000">
+                <div class="modal-header bg-warning" id="popupHeaderGenerico">
+                    <h5 class="modal-title" id="TituloPopupMensajeGenerico">Documento</h5>
+                    <button type="button" class="close " data-dismiss="modal" aria-label="Close" style="display:none">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="contenidoArchivo" style="padding: 5px 20px 0px 0px;">
+                    
+                </div>
+                <div class="modal-footer p-2">
+                    <button tabindex="2" type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="/Scripts/bootstrap.js?Version=20180711"></script>
+    <script type="text/javascript" src="/Scripts/moment.js?Version=20180711"></script>
+    <script type="text/javascript" src="/Scripts/bootstrap-datetimepicker.js?Version=20180711"></script>
+    <script type="text/javascript" src="/Scripts/respond.js?Version=20180711"></script>
+    <script type="text/javascript" src="/Scripts/bootstrap-dropdown-checkbox.min.js?Version=20180711"></script>
+    <script type="text/javascript" src="/Scripts/jquery.dataTables.min.js?Version=20180711"></script>
+    <script type="text/javascript" src="/Scripts/dataTables.fixedColumns.min.js?Version=20180711"></script>
+    <script type="text/javascript" src="/Scripts/jquery-ui.min.js?Version=20180711"></script>
+    <script type="text/javascript" src="/Scripts/dropdown.js?Version=20180711"></script>
+    <script type="text/javascript" src="/Scripts/bootstrap-select.js?Version=20180711"></script>
+    <script type="text/javascript" src="/Scripts/PopupMensajes.js?Version=07252018"></script>
+    <script type="text/javascript" src="/Scripts/rollups/sha512.js?Version=20180711"></script>
+    <script type="text/javascript" src="/Scripts/fileinput.js?Version=20180711"></script>
+    <script type="text/javascript" src="/Scripts/locales/es.js?Version=20180711"></script>
+    <script type="text/javascript" src="/Scripts/jquery.number.js?Version=20180711"></script>
+    <script type="text/javascript" src="~/Scripts/Contextual/jquery.contextMenu.min.js?Version=20180711"></script>
+    <script type="text/javascript" src="~/Scripts/Contextual/jquery.ui.position.min.js?Version=20180711"></script>
+
+    <script type="text/javascript" src="~/Scripts/Digitalizador/EscannerJarandes-1.0.0.1.js"></script>
+
+    <div id="popupBloqueo" style="z-index: 100000000000; position: fixed; background-color: #0e0e0e; top: 0px; bottom: 0px; left: 0px; right: 0px; opacity: 0.35;TEXT-ALIGN: CENTER;display:none">
+        <img src="~/Imagenes/Loading.gif" width="40" height="40" style="margin-top: 25%;" />
+    </div>
+
+</body>
+</html>

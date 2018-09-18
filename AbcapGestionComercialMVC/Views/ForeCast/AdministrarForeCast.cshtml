@@ -1,0 +1,117 @@
+﻿@using AbcapGestionComercialMVC.Models.Clases.ForeCast
+@using AbcapGestionComercialMVC.Models.Clases.General
+@model clsAppNetProyeccionForeCast
+
+@using (Html.BeginForm("guardarRol", "Seguridad", FormMethod.Post, new { @id = "fmrGuardarForeCast" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.ID)
+    <div class="modal-header">
+        <h5 class="modal-title">Creación / Modificación de Fore-Cast</h5>
+    </div>
+    <div class="modal-body">
+        <div class="container">
+
+            @Html.HiddenFor(m => m.TipoProceso.ID)
+            <div class="row">
+                <div class="col-md-3 text-right">
+                    <label>Id: </label>
+                </div>
+                <div class="col-md-2">
+                    @Html.TextBoxFor(m => m.Consecutivo, new { @class = "form-control form-control-smX", @readOnly = "readOnly" })
+                </div>
+            </div>
+            <div class="row mt1">
+                <div class="col-md-3 text-right">
+                    <label>Nombre: </label>
+                </div>
+                <div class="col-md-9">
+                    @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control form-control-smX", @readOnly = "readOnly" })
+                </div>
+            </div>
+            <div class="row mt1">
+                <div class="col-md-3 text-right">
+                    <label>Descripción: </label>
+                </div>
+                <div class="col-md-9">
+                    @Html.TextAreaFor(m => m.Descripcion, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="row mt1">
+                <div class="col-md-3 text-right">
+                    <label>Tipo dato: </label>
+                </div>
+                <div class="col-md-9">
+                    @Html.DropDownListFor(m => m.Bas_TipoDatoPYG.ID, ((SelectList)ViewBag.ListadoTipoDato).ToList(), new { @class = "form-control form-control-cmb-sm", @onchange = "cargaNombreAutomaticoForeCast()" })
+                </div>
+            </div>
+            <div class="row mt1">
+                <div class="col-md-3 text-right">
+                    <label>Fecha inicial: </label>
+                </div>
+                <div class="col-md-1 text-right">
+                    <small>Año: </small>
+                </div>
+                <div class="col-md-3">
+                    @Html.DropDownListFor(m => m.AnioSemanaInicial.ANO, ((SelectList)ViewBag.AnioInicial).ToList(), new { @class = "form-control form-control-cmb-sm", @onChange = "cargaSemanaPorAnio(this,'#AnioSemanaInicial_ID');" })
+                </div>
+                <div class="col-md-2 text-right">
+                    <small>Semana: </small>
+                </div>
+                <div class="col-md-3">
+                    @Html.DropDownListFor(m => m.AnioSemanaInicial.ID, ((SelectList)ViewBag.SemanasInicial).ToList(), new { @class = "form-control form-control-cmb-sm", @onchange = "cargaNombreAutomaticoForeCast()" })
+                </div>
+            </div>
+            <div class="row mt1">
+                <div class="col-md-3 text-right">
+                    <label>Fecha Final: </label>
+                </div>
+                <div class="col-md-1 text-right">
+                    <small>Año: </small>
+                </div>
+                <div class="col-md-3">
+                    @Html.DropDownListFor(m => m.AnioSemanaFinal.ANO, ((SelectList)ViewBag.AnioFinal).ToList(), new { @class = "form-control form-control-cmb-sm", @onChange = "cargaSemanaPorAnio(this,'#AnioSemanaFinal_ID');" })
+                </div>
+                <div class="col-md-2 text-right">
+                    <small>Semana: </small>
+                </div>
+                <div class="col-md-3">
+                    @Html.DropDownListFor(m => m.AnioSemanaFinal.ID, ((SelectList)ViewBag.SemanasFinal).ToList(), new { @class = "form-control form-control-cmb-sm", @onchange = "cargaNombreAutomaticoForeCast()" })
+                </div>
+            </div>
+
+            <br />
+            <div class="row mt1">
+                <div class="col-md-1">
+                </div>
+                <div class="col-md-11 text-left">
+                    @Html.CheckBoxFor(m => m.CargarAnteriorForeCast, new { @onChange = "cambiEstadoAntriorForeCast();" })
+                    <label>Copia foreCast Anterior</label>
+                </div>
+            </div>
+            <div class="row mt1">
+                <div class="col-md-3 text-right">
+                    <label>ForeCast: </label>
+                </div>
+                <div class="col-md-9">
+                    @Html.DropDownListFor(m => m.IDForeCastAnterior, ((SelectList)ViewBag.ForeCastAnteriores).ToList(), new { @class = "form-control form-control-cmb-sm", @Disabled = "Disabled" })
+                </div>
+            </div>
+            <br />
+
+            <div class="row mt1">
+                <div class="col-md-3 text-right"></div>
+                <div class="col-md-2 text-right">
+                    <label>Estado:</label>
+                </div>
+                <div class="col-md-4 text-right">
+                    @Html.DropDownListFor(m => m.EstadoObj.ID, ((SelectList)ViewBag.EstadosProyeccion).ToList(), new { @class = "form-control form-control-cmb-sm", @Disabled = "Disabled" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-sm btn-primary" onclick="return guardarForeCast()">Guardar</button>
+    </div>
+}

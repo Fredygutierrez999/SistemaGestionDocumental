@@ -1,0 +1,34 @@
+﻿@using AbcapGestionComercialMVC.Models.Clases.ForeCast;
+@model SelectList
+
+@using (Html.BeginForm("ForeCast", "SeleccionarAarhivoPrincipalWC", FormMethod.Post, new { @ID = "fmrArchivoPrincipalWC" }))
+{
+    @Html.Hidden("hdfXIDForeCast", (long)ViewBag.IDForeCast)
+    <div class="modal-header">
+        <label>
+            Seleccione el archivo principal del WC.
+        </label>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-3">
+                <label>Archivo principal: </label>
+            </div>
+            <div class="col-md-9">
+                @Html.DropDownList("ddlArchivoPrincipalWc", ((SelectList)Model).ToList(), new { @class = "form-control form-control-sm-cmX w-100" })
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="row">
+            <div class="col-md-3">
+            </div>
+            <div class="col-md-3">
+                <input type="button" class="btn btn-sm btn-danger w-100 " data-dismiss="modal" value="Cancelar" />
+            </div>
+            <div class="col-md-3">
+                <input type="button" class="btn btn-sm btn-success w-100" value="Consolidar" onclick="generarConsolidadoArchivos()" />
+            </div>
+        </div>
+    </div>
+}

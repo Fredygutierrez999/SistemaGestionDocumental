@@ -1,0 +1,162 @@
+﻿@using GestionDocumental.Models.Clases.Radicacion
+@model clsAppNetDocumentos_Filtros
+@{
+    ViewBag.Title = "Mis Documentos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    long xIDDocumento = -1;
+    if (Request.Params["IDDocumento"] != null)
+    {
+        xIDDocumento = Convert.ToInt64(Request.Params["IDDocumento"].ToString());
+    }
+}
+<div class="body-content">
+    <div class="panel panel-success">
+        <div class="panel-heading">
+            <div class="panel-title">Mis documentos</div>
+        </div>
+        <div class="panel-body">
+            @using (Html.BeginForm("MisDocumentos_Detalle", "Radicacion", FormMethod.Post, new { @Id = "fmrDetalleDocumento" }))
+            {
+                <div class="row">
+                    <div class="col-md-7"></div>
+                    <div class="col-md-2">
+                        <small>Estado:</small>
+                    </div>
+                    <div class="col-md-3">
+                        @Html.DropDownListFor(m => m.xBIDEstadoDocumento, ((SelectList)ViewBag.lstEstados).ToList(), new { @class = "form-control form-control-sm form-control-cmb-sm" })
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-md-2 text-right">
+                        <small>ID:</small>
+                    </div>
+                    <div class="col-md-1">
+                        @Html.TextBoxFor(m => m.xBID, new { @class = "form-control form-control-smX" })
+                    </div>
+                    <div class="col-md-2">
+                        <small>Tipo documento:</small>
+                    </div>
+                    <div class="col-md-3">
+                        @Html.DropDownListFor(m => m.xBIDTipoDocumento, ((SelectList)ViewBag.lstTiposDocumentos).ToList(), new { @class = "form-control form-control-sm form-control-cmb-sm" })
+                    </div>
+                </div>
+                <div class="row pt1">
+                    <div class="col-md-2 text-right">
+                        <small>Número documento:</small>
+                    </div>
+                    <div class="col-md-2">
+                        @Html.TextBoxFor(m => m.xBNumeroDocumento, new { @class = "form-control form-control-smX" })
+                    </div>
+                    <div class="col-md-1 text-right">
+                        <small>Nota:</small>
+                    </div>
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(m => m.xBNota, new { @class = "form-control form-control-smX" })
+                    </div>
+                </div>
+                <div class="row pt1">
+                    <div class="col-md-2 text-right">
+                        <small>Fecha creación:</small>
+                    </div>
+                    <div class="col-md-2">
+                        @Html.TextBoxFor(m => m.xBFechaCreacion, DateTime.Now.Date.ToString("dd/MM/yyyy"), new { @class = "form-control form-control-smX date", @placeholder = "dd/mm/yyyy" })
+                    </div>
+                    <div class="col-md-2 text-right">
+                        <small>Fecha documento:</small>
+                    </div>
+                    <div class="col-md-2">
+                        @Html.TextBoxFor(m => m.xBFechaDocumento, DateTime.Now.Date.ToString("dd/MM/yyyy"), new { @class = "form-control form-control-smX date", @placeholder = "dd/mm/yyyy" })
+                    </div>
+                    <div class="col-md-2 text-right">
+                        <small>Fecha recepción:</small>
+                    </div>
+                    <div class="col-md-2">
+                        @Html.TextBoxFor(m => m.xBFechaRecepcion, DateTime.Now.Date.ToString("dd/MM/yyyy"), new { @class = "form-control form-control-smX date", @placeholder = "dd/mm/yyyy" })
+                    </div>
+                </div>
+                <div class="row pt1">
+                    <div class="col-md-5"></div>
+                    <div class="col-md-2">
+                        <div class="btn btn-sm btn-success" onclick="consultarDetalle()">
+                            Buscar
+                        </div>
+                    </div>
+                    <div class="col-md-5"></div>
+                </div>
+            }
+
+            <div class="row pt1">
+                <div class="col-md-3">
+                    <label>Resultado búsqueda</label> <span class="badge">0</span>
+                </div>
+            </div>
+            <div class="row pt1">
+                <div class="col-md-12" id="contenidoDetalle">
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@* FRAGMENTO HTML PARA POPUP VISUALIZAR ARCHIVOS *@
+<div class="modal" id="popupListadoDocumentos" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" z-index="1000000">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="box-shadow: 4px 3px 20px 5px;margin: 10px;z-index:10000000">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title">Listado de documentos adjuntos</h5>
+            </div>
+            <div class="modal-body">
+                <table class="table table-condensed table-responsive table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <td>Nombre</td>
+                            <td>Extensión</td>
+                            <td>tamaño</td>
+                        </tr>
+                    </thead>
+                    <tbody id="cuerpoSoportes"></tbody>
+                </table>
+            </div>
+            <div class="modal-footer p-2">
+                <button tabindex="2" type="button" class="btn btn-sm btn-secondary" style="width:100px" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@* FRAGMENTO HTML PARA POPUP DE MOVIMIENTOS *@
+<div class="modal" id="popupListadoMovimientos" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" z-index="1000000">
+    <div class="modal-dialog" style="width:40%" role="document">
+        <div class="modal-content" style="box-shadow: 4px 3px 20px 5px;margin: 10px;z-index:10000000">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title">Listado de movimientos del documento</h5>
+            </div>
+            <div class="modal-body" id="divCuerpoDocumentoMovimientos">
+
+            </div>
+            <div class="modal-footer p-2">
+                <button tabindex="2" type="button" class="btn btn-sm btn-secondary" style="width:100px" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.date').datetimepicker({
+            viewMode: 'days',
+            format: 'DD/MM/YYYY'
+        });
+
+        var xIDValor = @xIDDocumento;
+        if (xIDValor != -1) {
+            $('#xBID').val(xIDValor);
+        }
+
+        consultarDetalle();
+    });
+</script>

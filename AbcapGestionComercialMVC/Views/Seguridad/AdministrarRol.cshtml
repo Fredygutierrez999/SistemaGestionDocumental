@@ -1,0 +1,73 @@
+﻿@using AbcapGestionComercialMVC.Models.Clases.Seguridad
+@model clsAppNetRoles
+
+@using (Html.BeginForm("guardarRol", "Seguridad", FormMethod.Post, new { @id = "fmrGuardarRol" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.Hidden("hdfIdPopup", Model.ID)
+    <div class="modal-header">
+        <h5 class="modal-title">Creación / Modificación de Rol</h5>
+    </div>
+    <div class="modal-body">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2 text-right">
+                    <label>Id: </label>
+                </div>
+                <div class="col-md-2">
+                    @Html.TextBox("txtIdPopup", Model.ID, new { @class = "form-control form-control-smX", @readOnly = "readOnly" })
+                </div>
+            </div>
+            <div class="row mt1">
+                <div class="col-md-2 text-right">
+                    <label>Nombre: </label>
+                </div>
+                <div class="col-md-10">
+                    @Html.TextBox("txtNombrePopup", Model.Nombre, new { @class = "form-control form-control-smX" })
+                </div>
+            </div>
+            <div class="row mt1">
+                <div class="col-md-2 text-right pt1">
+                    <label>Tipo: </label>
+                </div>
+                <div class="col-md-4">
+                    @Html.Hidden("hdfValoresTipoRolPopup", Json.Encode((List<clsAppNetTipoRol>)ViewBag.ListadoTipoRolBD))
+                    @Html.DropDownList("ddlTipoRoloPopup", ((SelectList)ViewBag.ListadoTipoRol).ToList(), new { @class = "form-control form-control-cmb-sm", @onchange = "cambiaTipoRol()" })
+                </div>
+                <div class="col-md-2 text-right pt1">
+                    <label>Canal: </label>
+                </div>
+                <div class="col-md-4">
+                    @Html.DropDownList("ddlCanalPopup", ((SelectList)ViewBag.ListadoSiglasCliente).ToList(), new { @class = "form-control form-control-cmb-sm",@readOnly="readOnly" })
+                </div>
+            </div>
+            @Html.Hidden("hdfSeleccionMenuPopup")
+            <div id="seccionMenu" class="row mt1">
+                <div class="col-md-2 text-right">
+                    <label>Menú: </label>
+                </div>
+                <div class="col-md-10">
+                    <div class="" style="width:100%;height:300px;border:1px solid gray;overflow-y:auto">
+                        <ul>
+                            @foreach (clsAppNetMenu objItem in ViewBag.ListadoMenu)
+                            {
+                                if (Model.Menu.Exists(delegate (clsAppNetMenu objMenu) { return objMenu.ID == objItem.ID; }))
+                                {
+                                    <li><input type="checkbox" checked="checked" value="@objItem.ID" class="chkOpcionesMenu" /> @objItem.Nombre</li>
+                                }
+                                else
+                                {
+                                    <li><input type="checkbox"  value="@objItem.ID" class="chkOpcionesMenu" /> @objItem.Nombre</li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-sm btn-primary" onclick="return guardarRol()">Guardar</button>
+    </div>
+}

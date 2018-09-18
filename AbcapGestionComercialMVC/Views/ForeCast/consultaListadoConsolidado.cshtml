@@ -1,0 +1,141 @@
+﻿@using AbcapGestionComercialMVC.Models.Clases.ForeCast
+@model List<clsAppNetConsolidacion_Encabezado>
+
+<div class="row">
+    <div class="col-md-4">
+        <label>Resultado de búsqueda: </label><span class="badge">@Model.Count</span>
+    </div>
+    <div class="col-md-1">
+    </div>
+    <div class="col-md-2">
+        <div id="btnEliminar" class="btn btn-sm btn-danger" onclick="eliminarConsolidacionesSeleccionadas();" disabled="disabled">
+            Eliminar consolidación
+            <span class="glyphicon glyphicon-remove-circle"></span>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div id="btnGenerarExcel" class="btn btn-sm btn-success" disabled="disabled">
+            Generar resumen Excel
+            <span class="glyphicon glyphicon-download "></span>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div id="btnExportar" class="btn btn-sm btn-success" disabled="disabled">
+            Exporta a Abcap-Gestión Comercial
+            <span class="glyphicon glyphicon-export"></span>
+        </div>
+    </div>
+</div>
+<hr style="padding:4px" />
+@if (Model.Count > 0)
+{
+    <table class="table table-condensed table-hover">
+        <thead>
+            <tr>
+                <td>
+                    ID
+                </td>
+                <td class="text-center">
+                    <span class="glyphicon glyphicon-play"></span>
+                </td>
+                <td>
+                    Nombre
+                </td>
+                <td>
+                    Descripción
+                </td>
+                <td>
+                    ID ABCAP
+                </td>
+                <td>
+                    Fecha expor.
+                </td>
+                <td>
+                    Usuario creación
+                </td>
+                <td>
+                    Fecha creación
+                </td>
+                <td>
+                    Fecha modificación
+                </td>
+                <td>
+                    Estado
+                </td>
+                <td>
+                    Selec.
+                </td>
+            <tr>
+        </thead>
+        <tbody>
+            @foreach (clsAppNetConsolidacion_Encabezado objItem in Model)
+            {
+                <tr>
+                    <td>
+                        @objItem.ID
+                    </td>
+                    <td>
+                        @if (@objItem.IDAppNetEstados == 4 || @objItem.IDAppNetEstados == 8)
+                        {
+                            <a href="Javascript:ProcesarConsolidadoForeCast(@objItem.ID)">
+                                Procesar
+                            </a>
+                        }
+                        else
+                        {
+                            <p>Sin acciones</p>
+                        }
+                    </td>
+                    <td>
+                        @objItem.Nombre
+                    </td>
+                    <td>
+                        @objItem.Descripcion
+                    </td>
+                    <td class="text-center">
+                        @objItem.IDAbcap_GeCo
+                    </td>
+                    <td>
+                        @objItem.FechaExportacion.ToString("MM/dd/yyyy HH:mm:ss")
+                    </td>
+                    <td>
+                        @objItem.IDAppNetUsuarioCreacion.Nombre
+                    </td>
+                    <td>
+                        @objItem.FechaCreacion.ToString("MM/dd/yyyy HH:mm:ss")
+                    </td>
+                    <td>
+                        @objItem.FechaUltimaModificacion.ToString("MM/dd/yyyy HH:mm:ss")
+                    </td>
+                    <td>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="label label-info">
+                                    @objItem.NombreEstado
+                                </label>
+                            </div>
+                            @if (@objItem.IDAppNetEstados == 8)
+                            {
+                                <a href="javascript:VerErroresConsolidacion(@objItem.ID)">
+                                    <div class="col-md-6" style="margin-top:4px">
+                                        <span class="glyphicon glyphicon-remove-circle" style="color:red"></span>
+                                    </div>
+                                </a>
+                            }
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        @Html.CheckBox("chkSeleccion", false, new { @value = objItem.ID, @onClick = "SeleccionarItem();", @Class = "chkSeleccion", @IDEstado = objItem.IDAppNetEstados, @IDAbcap = objItem.IDAbcap_GeCo })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <label class="label label-info">
+        Sin consolidación de datos.
+    </label>
+}
+

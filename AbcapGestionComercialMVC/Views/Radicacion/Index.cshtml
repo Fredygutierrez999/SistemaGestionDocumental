@@ -1,0 +1,275 @@
+﻿@using GestionDocumental.Models.Clases.Radicacion
+@model clsAppNetDocumentos
+@{
+    ViewBag.Title = "Radicación";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using (Html.BeginForm("Guardar", "Radicacion", FormMethod.Post, new { @ID = "fmrRadicacion" }))
+{
+    @Html.HiddenFor(m => m.getIDUnicoObjeto)
+    <div class="body-content">
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <div class="panel-title">Radicación de documentos</div>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        Flujo documental
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    @Html.HiddenFor(m => m.xIDArchivosEliminados)
+                    @Html.HiddenFor(m => m.AppNetFlujoEstados.ID)
+                    @Html.HiddenFor(m => m.ID)
+                    @Html.Hidden("hdfSoportes", Json.Encode(Model.lstSoportes))
+                    <div class="col-md-1 col-xs-2 text-right">
+                        <small>Estado:</small>
+                    </div>
+                    <div class="col-md-2  col-xs-10">
+                        <strong>@Model.AppNetFlujoEstados.Nombre</strong>
+                    </div>
+                    <div class="col-md-1 col-xs-2 text-right">
+                        <small>Acción:</small>
+                    </div>
+                    <div class="col-md-4 col-xs-10">
+                        @Html.DropDownListFor(m => m.IDSiguienteAccion, ((SelectList)ViewBag.lstAcciones).ToList(), new { @class = "form-control form-control-sm form-control-cmb-sm" })
+                    </div>
+                    <div class="col-md-2 hidden-xs"></div>
+                    <div class="col-md-2 hidden-md mt1">
+                        <hr />
+                    </div>
+                    <div class="col-md-2 col-xs-3">
+                        <div class="btn btn-primary btn-sm w-100" onclick="guardarRadicacion();">
+                            Asignar
+                        </div>
+                    </div>
+                </div>
+                <div class="row pt1">
+                    <div class="col-md-12">
+                        Información general
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-md-1 col-xs-2 text-right">
+                        <small>ID:</small>
+                    </div>
+                    <div class="col-md-1">
+                        <label>@Model.ID</label>
+                    </div>
+                    <div class="col-md-2  col-xs-4 text-right">
+                        <small>Tipo documento:</small>
+                    </div>
+                    <div class="col-md-4  col-xs-8">
+                        @Html.DropDownListFor(m => m.AppNetTipoDocumentos.ID, ((SelectList)ViewBag.lstTiposDocumentos).ToList(), new { @class = "form-control form-control-sm form-control-cmb-sm" })
+                    </div>
+                </div>
+                <div class="row pt1">
+                    <div class="col-md-1  col-xs-2 text-right">
+                        <small>Proveedor:</small>
+                    </div>
+                    <div class="col-md-3  col-xs-4">
+                        <input type="text" class="form-control form-control-smX" />
+                    </div>
+                    <div class="col-md-6  col-xs-6">
+                        @Html.DropDownListFor(m => m.IDAppNetEmisor.ID, ((SelectList)ViewBag.lstTiposDocumentos).ToList(), new { @class = "form-control form-control-sm form-control-cmb-sm" })
+                    </div>
+                </div>
+                <div class="row pt1">
+                    <div class="col-md-1  col-xs-2 text-right">
+                        <small>Número:</small>
+                    </div>
+                    <div class="col-md-2  col-xs-10">
+                        @Html.TextBoxFor(m => m.NumeroDocumento, new { @class = "form-control form-control-smX", @placeholder = "0" })
+                    </div>
+                    <div class="col-md-1  col-xs-2 text-right mt1">
+                        <small>Fecha:</small>
+                    </div>
+                    <div class="col-md-2  col-xs-6 mt1">
+                        @Html.TextBoxFor(m => m.FechaDocumento, Model.FechaDocumento.ToString("dd/MM/yyyy"), new { @class = "form-control form-control-smX date", @placeholder = "dd/mm/yyyy" })
+                    </div>
+                    
+                    <div class="col-md-2  col-xs-5 text-right">
+                        <small>Fecha recepción:</small>
+                    </div>
+                    <div class="col-md-2 col-xs-7 mt1">
+                        @Html.TextBoxFor(m => m.FechaRecepcion, Model.FechaRecepcion.ToString("dd/MM/yyyy"), new { @class = "form-control form-control-smX date", @placeholder = "dd/mm/yyyy" })
+                    </div>
+                </div>
+                <div class="row pt1">
+                    <div class="col-md-1  col-xs-2 text-right">
+                        <small>Nota:</small>
+                    </div>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(m => m.Nota, new { @class = "form-control form-control-smX", @placeholder = "Ingrese una breve descripción (Opcional)." })
+                    </div>
+                </div>
+                <div class="row pt1">
+                    <div class="col-md-12">
+                        Documentos Abjuntos
+                    </div>
+                </div>
+                <hr />
+                <div class="row pt1" style="display:none">
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="btn btn-sm btn-success">
+                                    <span class="glyphicon glyphicon-file"></span>
+                                    Escanear
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="btn btn-sm btn-success">
+                                    <span class="glyphicon glyphicon-upload"></span>
+                                    Escanear y Generar PDF
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                    </div>
+                </div>
+                <div class="row pt1">
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-8" id="pnlContenedorEscanner">
+                        <div style="border:1px solid #b2aeae;min-height:560px;" id="pnlEscannerPrincipal">
+
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                    </div>
+                </div>
+                <div class="row pt1">
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-8" style="">
+                        <hr />
+                        <div class="row">
+                            <div class="col-md-3 text-right">
+                                <small>Subir documento:</small>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2"></div>
+                            <div class="col-md-10">
+                                <input type="file" class="file" id="fileAbjunto" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                    </div>
+                </div>
+
+                <div class="row pt1">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2">
+                        <small>Listado de archivos subidos</small>
+                    </div>
+                </div>
+                <div class="row pt1" id="tblConSoportes">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-10">
+                        <table class="table table-condensed table-hover table-responsive table-bordered">
+                            <thead>
+                                <tr>
+                                    <td>
+                                        <strong>Nombre</strong>
+                                    </td>
+                                    <td style="max-width:70px;width:70px" class="text-center">
+                                        <strong>Extensión</strong>
+                                    </td>
+                                    <td style="max-width:70px;width:70px">
+                                        <strong>Tamaño</strong>
+                                    </td>
+                                    <td style="max-width:60px;width:60px">
+                                        <strong>Proceso</strong>
+                                    </td>
+                                </tr>
+                            </thead>
+                            <tbody id="tblSoportes"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row pt1" id="tblSinDatosSoportes">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-10">
+                        <span class="badge">
+                            Sin soportes
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+}
+
+@* FRAGMENTO HTML PARA POPUP VISUALIZAR ARCHIVOS *@
+<div class="modal" id="popupValidaEliminacionArchivo" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" z-index="1000000">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="box-shadow: 4px 3px 20px 5px;margin: 10px;z-index:10000000">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title" id="TituloPopupMensajeGenerico">Validación de eliminación</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <input type="hidden" id="hdfArchivoAEliminar" value="-1" />
+                        ¿Esta seguro de eliminar el archivo?
+                        <br />
+                        <small>(Debe guardar para aplicar cambios al documento)</small>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer p-2">
+                <button tabindex="2" type="button" class="btn btn-sm btn-secondary" style="width:100px" data-dismiss="modal">No</button>
+                <button tabindex="2" type="button" onclick="return confirmaEliminacion();" style="width:100px" class="btn btn-sm btn-secondary">Si</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.date').datetimepicker({
+            viewMode: 'days',
+            format: 'DD/MM/YYYY'
+        });
+        InicializarSocket();
+        $('#fileAbjunto').fileinput({
+            language: "es",
+            uploadUrl: "./subirArchivos",
+            allowedFileExtensions: ["jpg", "png", "gif", "pdf"],
+            uploadExtraData: function () {// callback example
+                var out = {}, key, i = 0;
+                out["xIDSession"] = "@Model.getIDUnicoObjeto";
+                return out;
+            }
+        }).on('fileuploaded', function (event, data, previewId, index) {
+            var objResultado = data.response;
+            if (objResultado.ResultadoProceso) {
+                for (var i = 0; i < objResultado.objResultado.length; i++) {
+                    lstSoportes.push(objResultado.objResultado[i]);
+                }
+                cargarListadoSoportes();
+            } else {
+                mostrarMensaje(2, objResultado.MensajeProceso);
+            }
+            setTimeout(function () {
+                $('#fileAbjunto').fileinput('reset');
+                $('#fileAbjunto').fileinput('refresh');
+            }, 300);
+            });
+
+        var lstSoportesConsulta = JSON.parse($('#hdfSoportes').val());
+        lstSoportes = lstSoportesConsulta;
+        cargarListadoSoportes();
+
+    });
+</script>

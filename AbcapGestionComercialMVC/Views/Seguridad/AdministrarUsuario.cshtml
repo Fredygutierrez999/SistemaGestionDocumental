@@ -1,0 +1,94 @@
+﻿@using AbcapGestionComercialMVC.Models.Clases.Seguridad
+@model clsAppNetUsuarios
+
+@using (Html.BeginForm("guardarUsuario", "Seguridad", FormMethod.Post, new { @id = "fmrGuardarUsuario" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.Hidden("hdfIdPopup", Model.ID)
+    <div class="modal-header">
+        <h5 class="modal-title">Creación / Modificación de usuario</h5>
+    </div>
+    <div class="modal-body">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2 text-right">
+                    <label>Id: </label>
+                </div>
+                <div class="col-md-2">
+                    @Html.TextBox("txtIdPopup", Model.ID, new { @class = "form-control form-control-smX", @readOnly = "readOnly" })
+                </div>
+            </div>
+            <div class="row mt1">
+                <div class="col-md-2 text-right">
+                    <label>Usuario: </label>
+                </div>
+                <div class="col-md-4">
+                    @Html.TextBox("txtUsuario", Model.UserName, new { @class = "form-control form-control-smX" })
+                </div>
+                <div class="col-md-2 text-right">
+                    <label>Clave: </label>
+                </div>
+                <div class="col-md-4">
+                    @Html.Password("txtClave", Model.Clave, new { @class = "form-control form-control-smX" })
+                </div>
+            </div>
+            <div class="row mt1">
+                <div class="col-md-2 text-right">
+                    <label>Nombre: </label>
+                </div>
+                <div class="col-md-4">
+                    @Html.TextBox("txtNombrePopup", Model.Nombre, new { @class = "form-control form-control-smX" })
+                </div>
+                <div class="col-md-2 text-right">
+                    <label>Apellidos: </label>
+                </div>
+                <div class="col-md-4">
+                    @Html.TextBox("txtApellidosPopup", Model.Apellido, new { @class = "form-control form-control-smX" })
+                </div>
+            </div>
+            <div class="row mt1">
+                <div class="col-md-2 text-right">
+                    <label>Correo: </label>
+                </div>
+                <div class="col-md-10">
+                    @Html.TextBox("txtCorreo", Model.CorreoElectronico, new { @class = "form-control form-control-smX" })
+                </div>
+            </div>
+            @Html.Hidden("hdfSeleccionMenuPopup")
+            <div id="seccionMenu" class="row mt1">
+                <div class="col-md-2 text-right">
+                    <label>Roles: </label>
+                </div>
+                <div class="col-md-10">
+                    <div class="" style="width:100%;height:300px;border:1px solid gray;overflow-y:auto">
+                        <ul>
+                            @foreach (clsAppNetRoles objItem in ViewBag.ListadoRoles)
+                            {
+                                if (Model.Roles.Exists(delegate (clsAppNetRoles objRoles) { return objRoles.ID == objItem.ID; }))
+                                {
+                                    <li><input type="checkbox" checked="checked" value="@objItem.ID" class="chkOpcionesUsuario" /> @objItem.Nombre</li>
+                                }
+                                else
+                                {
+                                    <li><input type="checkbox" value="@objItem.ID" class="chkOpcionesUsuario" /> @objItem.Nombre</li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt1">
+                <div class="col-md-2 text-right">
+                    <label>Estado:</label>
+                </div>
+                <div class="col-md-10">
+                    @Html.CheckBox("chkAactivo", (Model.ID == 0 ? true : Model.Estado == 1), new { @class = "" }) Activo
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-sm btn-primary" onclick="return guardarUsuario()">Guardar</button>
+    </div>
+}

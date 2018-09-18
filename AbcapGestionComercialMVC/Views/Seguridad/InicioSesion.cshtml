@@ -1,0 +1,77 @@
+﻿@using AbcapGestionComercialMVC.Models.Clases.Seguridad
+@model clsAppNetUsuarios
+@{
+    ViewBag.Title = "Ingreso a Gestión Documental";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+<div class="container">
+    <div class="row">
+        <div class="col-md-4 col-sm-3"></div>
+        <div class="col-md-4 col-sm-6 text-center">
+            <h3 style="color:white">
+                BIENVENIDOS...!
+            </h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 col-sm-3"></div>
+        <div class="col-md-4 col-sm-6 text-center">
+            <h5 style="color:white">
+                A Gestión Documental
+            </h5>
+        </div>
+    </div>
+    <hr />
+    <div class="row" id="divLogin">
+        <div class="col-md-4 col-sm-2 hidden-xs"></div>
+        <div class="col-md-4 col-sm-8 col-xs-12">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <label>Inicio de sesión</label>
+                </div>
+                @using (Html.BeginForm("validarInicioSession", "Seguridad", FormMethod.Post, new { @id = "frmValidaInicioSession" }))
+                {
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-3 col-sm-3 text-right">
+                                <label>Usuario:</label>
+                            </div>
+                            <div class="col-md-8 col-sm-8">
+                                @Html.TextBox("UserName", Model.UserName, new { @class = "form-control form-control-smX", @autocomplete = "off" })
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3 col-sm-3 text-right">
+                                <label>Clave:</label>
+                            </div>
+                            <div class="col-md-8 col-sm-8">
+                                @Html.Password("Clave", Model.Clave, new { @class = "form-control form-control-smX", @autocomplete = "off" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">2
+                        <div class="row">
+                            <div class="col-md-5 col-sm-5"></div>
+                            <div class="col-md-2 col-sm-2">
+                                <input class="btn btn-sm btn-success" type="submit" value="Ingresar" />
+                            </div>
+                            <div class="col-md-5"></div>
+                        </div>
+                    </div>
+                }
+            </div>
+            @if (ViewBag.ListadoErrores != null)
+            {
+                <div class="alert alert-warning">
+                    <ul>
+                        @foreach (string strCadena in ViewBag.ListadoErrores)
+                        {
+                            <li>@strCadena</li>
+                        }
+                    </ul>
+                </div>
+            }
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+</div>

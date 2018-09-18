@@ -1,0 +1,187 @@
+﻿@using AbcapGestionComercialMVC.Models.Clases.ForeCast;
+@model List<clsAppNetProyeccionForeCast_Archivos>
+<div class="modal-header">
+    Archivos utilizados en el ForeCast
+</div>
+<div class="modal-body" id="cuerpoContenidoMovimientos" style="min-height:450px;overflow-y:auto">
+    <div class="row">
+        <div class="col-md-10">
+            @Html.Hidden("hdfForeCast", (long)ViewBag.IDForeCast)
+            @if (((clsAppNetProyeccionForeCast)ViewBag.ObjForeCast).DatosConsolidados == false)
+            {
+                <input type="button" class="btn btn-sm btn-primary" onclick="subirNuevosArchivos();" value="Subir archivos..." />
+            }
+            @*<input id="input-b7" name="input-b7 []" multiple type="file" class="file" data-allowed-file-extensions='["csv", "txt"]'>*@
+        </div>
+        <div class="col-md-2">
+            <div class="btn btn-sm btn-warning w-100" onclick="MostrarventanaAdministradorArchivos(@((long)ViewBag.IDForeCast));">
+                <span class="glyphicon glyphicon-refresh"></span>
+                <label>Actualizar</label>
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-md-3">
+            <strong>Archivos cargados<span class="badge"> @Model.Count</span></strong>
+        </div>
+    </div>
+    <table class="table table-condensed table-hover">
+        <thead>
+            <tr>
+                <td>ID</td>
+                <td>Nombre</td>
+                <td>Tipo</td>
+                <td>Observaciones</td>
+                <td>Usuario subida</td>
+                <td>Fecha archivo</td>
+                <td>Fecha subida</td>
+                <td>Estado</td>
+                <td class="text-center">Proceso</td>
+                <td>Sel.</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (clsAppNetProyeccionForeCast_Archivos objItem in Model)
+            {
+                <tr>
+                    <td>@objItem.ID</td>
+                    <td>@objItem.Nombre</td>
+                    <td>@objItem.TipoArchivo</td>
+                    <td>@objItem.Observaciones</td>
+                    <td>@objItem.NombreUsuarioSubida</td>
+                    <td>@objItem.Fecha.ToString("MM/dd/yyyy")</td>
+                    <td>@objItem.FechaSubida.ToString("MM/dd/yyyy HH:mm:ss")</td>
+                    <td>
+                        @if (objItem.SeEjecutaProceso)
+                        {
+                            <label class="label label-danger">
+                                @objItem.NombreEstado
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="label label-success">
+                                @objItem.NombreEstado
+                            </label>
+                        }
+
+                        @if (objItem.SeMuestraBtnError)
+                        {
+                            <spam class="btn btn-sm glyphicon glyphicon-list " style="color:orange;cursor:pointer" onclick="mostrarErroresCargaArchivo(@objItem.ID);"></spam>
+                        }
+                    </td>
+                    <td class="text-center">
+                        @if (objItem.SeEjecutaProceso)
+                        {
+                            <a href="Javascript:ValidarArchivo(@objItem.ID);">Validar archivo</a>
+                        }
+                        else
+                        {
+                            <small>Sin acciones</small>
+                        }
+                    </td>
+                    <td>
+                        @if (((clsAppNetProyeccionForeCast)ViewBag.ObjForeCast).DatosConsolidados == false)
+                        {
+                            if (objItem.SeEjecutaProceso)
+                            {
+                                <input class="chkSeleccionarItems" type="checkbox" value="@objItem.ID" />
+                            }
+                            else
+                            {
+                                @*<input class="chkSeleccionarItems" disabled="disabled" type="checkbox" value="@objItem.ID" />*@
+                                <input class="chkSeleccionarItems" type="checkbox" value="@objItem.ID" />
+                            }
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <hr />
+    <div class="row">
+        <div class="col-md-3">
+            <strong>Consolidado de archivos<span class="badge"> @Html.Raw(((List<clsAppNetProyeccionForeCast_Archivos>)ViewBag.lstArchivosConsolidados).Count) </span></strong>
+        </div>
+        <div class="col-md-5">
+        </div>
+        <div class="col-md-2">
+            @if (((clsAppNetProyeccionForeCast)ViewBag.ObjForeCast).DatosConsolidados == false)
+            {
+                <div class="btn btn-sm btn-danger w-100" onclick="return eliminarArchivos();">
+                    Eliminar archivo(s)
+                    <span class="glyphicon glyphicon-floppy-remove"></span>
+                </div>
+            }
+        </div>
+        <div class="col-md-2">
+            @if (((clsAppNetProyeccionForeCast)ViewBag.ObjForeCast).DatosConsolidados == false)
+            {
+                <div class="btn btn-sm btn-success w-100" onclick="consolidarArchivos(@((long)ViewBag.IDForeCast));">
+                    Consolidar archivos
+                    <span class="glyphicon glyphicon-compressed"></span>
+                </div>
+            }
+        </div>
+    </div>
+    @if (((clsAppNetProyeccionForeCast)ViewBag.ObjForeCast).DatosConsolidados)
+    {
+        <table class="table table-condensed table-hover">
+            <thead>
+                <tr>
+                    <td>ID</td>
+                    <td>Nombre</td>
+                    <td># Cajas</td>
+                    <td># Cajas archivo</td>
+                    <td># Tallos</td>
+                    <td># Tallos archivo</td>
+                    <td>Tipo</td>
+                    <td>Usuario subida</td>
+                    <td>Fecha consolidación</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (clsAppNetProyeccionForeCast_Archivos objItem in (List<clsAppNetProyeccionForeCast_Archivos>)ViewBag.lstArchivosConsolidados)
+                {
+                <tr>
+                    <td>@objItem.ID</td>
+                    <td>@objItem.Nombre</td>
+                    <td>@objItem.cantidadCajas.ToString("N")</td>
+                    <td>@objItem.cantidadCajasArchivo.ToString("N")</td>
+                    <td>@objItem.cantidadTallos.ToString("N")</td>
+                    <td>@objItem.cantidadTallosArchivo.ToString("N")</td>
+                    <td>@objItem.TipoArchivo</td>
+                    <td>@objItem.NombreUsuarioSubida</td>
+                    <td>@objItem.FechaSubida.ToString("MM/dd/yyyy")</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <br />
+        <div class="alert alert-info">
+            Sin consolidación de archivos
+        </div>
+    }
+</div>
+<div class="modal-footer">
+    <div class="col-md-2">
+        <input type="button" class="btn btn-sm w-100" data-dismiss="modal" value="Cerrar" />
+    </div>
+    <div class="col-md-2"></div>
+    <div class="col-md-6">
+
+    </div>
+    <div class="col-md-2">
+        @if (((clsAppNetProyeccionForeCast)ViewBag.ObjForeCast).DatosConsolidados && ((clsAppNetProyeccionForeCast)ViewBag.ObjForeCast).EstadoObj.ID == 1)
+        {   
+            <div class="btn btn-sm btn-danger w-100" onclick="return validacionEliminacionConsolidacion();">
+                Eliminar consolidación
+                <span class="glyphicon glyphicon-floppy-remove"></span>
+            </div>
+        }
+    </div>
+</div>

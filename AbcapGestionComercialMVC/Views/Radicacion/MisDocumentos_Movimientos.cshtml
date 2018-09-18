@@ -1,0 +1,26 @@
+﻿@using GestionDocumental.Models.Clases.Radicacion
+@using AbcapGestionComercialMVC.Models.Clases.Seguridad
+@model List<clsAppNetDocumentos_Movimientos>
+<div class="w-100" style="max-height:250px;overflow-y:auto">
+    <table class="table table-bordered table-condensed table-hover table-responsive">
+        <thead>
+            <tr>
+                <td>Estado</td>
+                <td>Descripción</td>
+                <td style="width:180px">Usuario movimiento</td>
+                <td style="width:120px">Fecha movimiento</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (clsAppNetDocumentos_Movimientos objItem in Model)
+            {
+                <tr>
+                    <td><small>@objItem.AppNetFlujoEstados.Nombre</small></td>
+                    <td><small>@objItem.Descripcion_Movimiento</small></td>
+                    <td><small>@objItem.AppNetUsuariosCreacion.Nombre</small></td>
+                    <td><small>@objItem.FechaMovimiento</small></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

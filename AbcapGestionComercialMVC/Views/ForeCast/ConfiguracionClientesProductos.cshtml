@@ -1,0 +1,192 @@
+﻿@using AbcapGestionComercialMVC.Models.Clases.ForeCast;
+@model clsAppNetProyeccionForeCast
+@{
+    ViewBag.Title = "Configuración productos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+    serializer.MaxJsonLength = 999999999;
+}
+@Html.Hidden("hdfData_Canales", serializer.Serialize((object)ViewBag.Data))
+@Html.Hidden("hdfEstadoModificacion", Model.EstadoObj.ID == 1)
+@*@Html.Hidden("hdfData_Clientes", serializer.Serialize((List<object>)ViewBag.Data.Clientes))
+    @Html.Hidden("hdfData_Productos", serializer.Serialize((List<object>)ViewBag.Data.Productos))
+    @Html.Hidden("hdfData_Presentaciones", serializer.Serialize((List<object>)ViewBag.Data.Presentaciones))
+    @Html.Hidden("hdfData_Temmporadas", serializer.Serialize((List<object>)ViewBag.Data.TemporadasBase))
+    @Html.Hidden("hdfData_Resumen", serializer.Serialize((List<object>)ViewBag.Data.DatosResumen))*@
+@using (Html.BeginForm("GuardarConfiguracionClientesProductos", "ForeCast", FormMethod.Post, new { @Id = "fmrItemsModificadoAProyectar" }))
+{
+    <div class="row">
+        <div class="col-md-1 text-right">
+            <label>Id:</label>
+        </div>
+        <div class="col-md-1">
+            @Html.TextBoxFor(m => m.Consecutivo, new { @class = "form-control form-control-sm", @ReadOnly = "ReadOnly" })
+        </div>
+        <div class="col-md-1 text-right">
+            <label>Nombre:</label>
+        </div>
+        <div class="col-md-4">
+            @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control form-control-sm", @ReadOnly = "ReadOnly" })
+        </div>
+        <div class="col-md-1 text-right">
+            <label>Tipo dato:</label>
+        </div>
+        <div class="col-md-2">
+            @Html.TextBoxFor(m => m.Bas_TipoDatoPYG.Nombre, new { @class = "form-control form-control-sm", @ReadOnly = "ReadOnly" })
+        </div>
+        <div class="col-md-1 text-right">
+            <label>Estado:</label>
+        </div>
+        <div class="col-md-1">
+            <label class="label label-info">
+                @Model.EstadoObj.Nombre
+            </label>
+        </div>
+    </div>
+    @Html.HiddenFor(m => m.ID)
+    @Html.Hidden("hdfDataModificada")
+}
+<hr style="padding: 2px !important;" />
+<div class="row">
+    <div class="barraHerramientas">
+        <div class="col-md-12">
+            <a href="../ForeCast/Consulta" class="btn btn-sm btn-default">
+                <span class="glyphicon glyphicon-circle-arrow-left"></span>
+                Atras
+            </a>
+            <span class="separador"></span>
+            @if (Model.EstadoObj.ID == 1)
+            {
+                <a href="javascript:AgregarProducto()" class="btn btn-sm btn-default">
+                    <span class="glyphicon glyphicon-new-window"></span>
+                    Agregar producto
+                </a>
+            }
+
+            <a href="javascript:guardarItemModificados()" class="btn btn-sm btn-default" style="float:right;width:150px">
+                @if (Model.EstadoObj.ID == 1)
+                {
+                    <p style="margin:0px"><span class="glyphicon glyphicon-ok-circle"></span> Guardar y continuar</p>
+                }
+                else
+                {
+                    <p style="margin:0px"><span class="glyphicon glyphicon-ok-circle"></span> Continuar</p>
+                }
+            </a>
+
+
+        </div>
+
+    </div>
+</div>
+<hr style="padding: 2px !important;" />
+<div class="container-fluid">
+    <div class="row tabla-cabeza">
+        <table>
+            <tr>
+                <td class="col-md-1  text-center bordeSingle">
+                    <small>Canal (<span id="lblCantidadCanal" class="">0</span>)</small>
+                </td>
+                <td class="col-md-3  text-center bordeSingle">
+                    <small>Cliente (<span id="lblCantidadCliente" class="">0</span>)</small>
+                </td>
+                <td class="col-md-4 text-center bordeSingle">
+                    <small>Producto (<span id="lblCantidadProducto" class="">0</span>)</small>
+                </td>
+                <td class="col-md-1 text-center bordeSingle">
+                    <small>Versión  (<span id="lblCantidadVersion" class="">0</span>)</small>
+                </td>
+                <td class="col-md-1 text-center bordeSingle">
+                    <small title="Presentación">Pres. (<span id="lblCantidadPresentacion" class="">0</span>)</small>
+                </td>
+                <td class="col-md-2 text-center bordeSingle">
+                    <small>Temporada  (<span id="lblCantidadTemporada" class="">0</span>)</small>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="row" style="position: absolute;width: 1170px;z-index:10">
+        <div class="col-md-1 text-center bordeSingle">
+
+        </div>
+        <div class="col-md-3 text-center bordeSingle">
+            <input type="text" id="txtBusquedaCliente" onkeydown='return evaluaLetrabuscarCliente(this);' onchange="buscarCliente(this);" placeholder="Buscar cliente" class="form-control form-control-sm" />
+        </div>
+        <div class="col-md-4 text-center bordeSingle">
+            <input type="text" id="txtBusquedaProducto" onkeydown="return evaluaLetrabuscarProducto(this)" onchange="buscarProducto(this)" placeholder="Buscar producto" class="form-control form-control-sm" />
+        </div>
+        <div class="col-md-1 text-center bordeSingle">
+        </div>
+        <div class="col-md-1 text-center bordeSingle">
+
+        </div>
+        <div class="col-md-2 text-center bordeSingle">
+
+        </div>
+    </div>
+    <div class="row">
+        <div id="divCanales" class="col-md-1 text-center bordeSingle minHeingCuadroSeleccion" style="padding-top:25px">
+
+        </div>
+        <div id="divClientes" class="col-md-3 text-center bordeSingle minHeingCuadroSeleccion" style="padding-top:25px">
+
+        </div>
+        <div id="divProductos" class="col-md-4 text-center bordeSingle minHeingCuadroSeleccion" style="padding-top:25px">
+
+        </div>
+        <div id="divVersiones" class="col-md-1 text-center bordeSingle minHeingCuadroSeleccion" style="padding-top:25px">
+
+        </div>
+        <div id="divPresentaciones" class="col-md-1 text-center bordeSingle minHeingCuadroSeleccion" style="padding-top:25px;padding-left:2px !important;padding-right:2px !important">
+
+        </div>
+        <div id="divTemporadas" class="col-md-2 text-center bordeSingle minHeingCuadroSeleccion" style="padding-top:25px">
+
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/ViewsJS/ControlConfiguracionClientesProductos.js?version0723218"></script>
+<script>
+    $(document).ready(function () {
+        cargaListadosBD();
+    });
+</script>
+
+
+<div class="modal modal-sm fade" id="popupAgregarProducto" tabindex="-1" role="dialog">
+    <div class="modal-dialog" style="width:80%" role="document">
+        <div class="modal-content" id="cuerpoAgregarProducto">
+
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div><!-- /.modal -->
+
+
+<div class="modal modal-sm fade" id="popupValidarRemovercionProducto" tabindex="-1" role="dialog">
+    <div class="modal-dialog" style="width:40%" role="document">
+        <div class="modal-content" id="cuerpoAgregarProducto">
+            <div class="modal-header">
+                Validación del sistema
+            </div>
+            <div class="modal-body">
+                ¿ Desea remover el producto de la proyección ?
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-3">
+                        <div class="btn btn-sm btn-default w-100 text-center"  data-dismiss="modal">
+                            No 
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="btn btn-sm btn-success w-100 text-center" onclick="removerProductoSeleccion();">
+                            Si
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div><!-- /.modal -->

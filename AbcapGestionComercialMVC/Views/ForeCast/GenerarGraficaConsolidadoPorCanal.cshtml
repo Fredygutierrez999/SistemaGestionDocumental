@@ -1,0 +1,27 @@
+﻿@using AbcapGestionComercialMVC.Models.Clases
+@model clsProyeccionVenta
+@{
+   var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+   serializer.MaxJsonLength = 999999999;
+}
+<div class="modal-header">
+    <div class="modal-title">
+        Canales Vs Semanas
+    </div>
+    @Html.Hidden("dhfDatosGrafica", serializer.Serialize(Model))
+</div>
+<div class="modal-body" id="divContenedorGraficas">
+
+</div>
+<div class="modal-footer">
+    <div class="row">
+        <div class="col-md-5"></div>
+        <div class="col-md-2">
+            <div class="btn btn-sm btn-default w-100" data-dismiss="modal">
+                Cerrar
+                <span class="glyphicon glyphicon-remove-circle"></span>
+            </div>
+        </div>
+    </div>
+</div>
+

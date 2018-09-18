@@ -1,0 +1,124 @@
+﻿@using AbcapGestionComercialMVC.Models.Clases.ForeCast
+@model List<clsResumenGenerarForeCast>
+@{
+    long xIDForeCast = ((clsAppNetProyeccionForeCast)ViewBag.ForeCast).ID;
+}
+<div class="modal-header">
+    <div class="modal-title">
+        Consolidado exportación datos a Abcap_Gestion_Comercial <span class="glyphicon glyphicon-export"></span>
+    </div>
+</div>
+<div class="modal-body">
+
+    <div class="row" style="display:none">
+        <div class="col-md-7">
+            <h3>Consolidado de cantidades cajas y tallos.</h3>
+        </div>
+        <div class="col-md-5">
+            <h3>Grafica de comportamiento de ventas</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table id="tblResumenForeCast" class="table table-condensed table-hover table-bordered">
+                <thead>
+                    <tr class="text-center">
+                        <td></td>
+                        <td></td>
+                        <td colspan="3">
+                            Cajas
+                        </td>
+                        <td colspan="3">
+                            Tallos
+                        </td>
+                        <td colspan="2">Inconsistencías</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Canal</td>
+                        <td>Año</td>
+                        <td>
+                            Cantidad APP
+                            <span class="glyphicon glyphicon-exclamation-sign" style="color:chocolate" title="Cantidad de cajas a proyectar."></span>
+                        </td>
+                        <td>
+                            Cantidad Archivo
+                            <span class="glyphicon glyphicon-exclamation-sign" style="color:chocolate" title="Cantidad de cajas a proyectar en los archivos cargados."></span>
+                        </td>
+                        <td>Diferencia</td>
+                        <td>
+                            Cantidad APP
+                            <span class="glyphicon glyphicon-exclamation-sign" style="color:chocolate" title="Cantidad de tallos a proyectar."></span>
+                        </td>
+                        <td>
+                            Cantidad Archivo
+                            <span class="glyphicon glyphicon-exclamation-sign" style="color:chocolate" title="Cantidad de tallos a proyectar en los archivos cargados."></span>
+                        </td>
+                        <td>Diferencia</td>
+                        <td>
+                            Cantidad App
+                            <span class="glyphicon glyphicon-exclamation-sign" style="color:chocolate" title="Cantidad de productos que no cruzan por la combinación de producto, presentacion y temporada."></span>
+                        </td>
+                        <td>
+                            Cantidad Archivo
+                            <span class="glyphicon glyphicon-exclamation-sign" style="color:chocolate" title="Cantidad de productos que no cruzan por la combinación de producto, presentacion y temporada de los archivos cargados."></span>
+                        </td>
+                        <td>Estado</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (clsResumenGenerarForeCast objItem in Model)
+                    {
+                        <tr>
+                            <td>@objItem.Canal</td>
+                            <td>@objItem.Anio</td>
+                            <td class="text-right">@objItem.CantidadCajas.ToString("N")</td>
+                            <td class="text-right">@objItem.CantidadCajasArch.ToString("N")</td>
+                            <td class="text-right">@objItem.DiferenciaCajasArch.ToString("N")</td>
+                            <td class="text-right">@objItem.CantidadTallos.ToString("N")</td>
+                            <td class="text-right">@objItem.CantidadTallosArch.ToString("N")</td>
+                            <td class="text-right">@objItem.DiferenciaTallosArch.ToString("N")</td>
+                            <td class="text-right">
+                                @if (objItem.CantidadSinCruzar == 0)
+                                {
+                                    Html.Raw(objItem.CantidadSinCruzar.ToString("N"));
+                                }
+                                else
+                                {
+                                    <a href="Javascript:consultaInconsistenciasCanalYAnio('@objItem.Canal',@objItem.Anio, @Html.Raw(xIDForeCast))">
+                                        @objItem.CantidadSinCruzar.ToString("N")
+                                    </a>
+                                }
+                            </td>
+                            <td class="text-right">@objItem.CantidadSinCruzarArch.ToString("N")</td>
+                            <td class="text-right text-center">
+                                @if (objItem.DiferenciaCajasArch != 0 || objItem.DiferenciaTallosArch != 0 || objItem.CantidadSinCruzar != 0 || objItem.CantidadSinCruzarArch != 0)
+                                {
+                                    <span class="glyphicon glyphicon-remove" style="color:orange"></span>
+                                }
+                                else
+                                {
+                                    <span class="glyphicon glyphicon-ok" style="color:greenyellow"></span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+<div class="modal-footer">
+    <div class="col-md-3"></div>
+    <div class="col-md-3">
+        <div class="btn btn-sm btn-default w-100" data-dismiss="modal">
+            Cerrar
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="btn btn-sm btn-success w-100" onclick="validacionExportacionConsolidacion(@xIDForeCast);">
+            Exportar datos
+        </div>
+    </div>
+</div>

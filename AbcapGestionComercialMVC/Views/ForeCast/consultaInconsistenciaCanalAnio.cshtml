@@ -1,0 +1,44 @@
+﻿@using AbcapGestionComercialMVC.Models.Clases.ForeCast
+@model List<clsAppNetProyeccionForeCast_Items>
+<div class="modal-header">
+    <h4>Inconsistencias</h4>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-condensed table-hover">
+                <thead>
+                    <tr>
+                        <td>Canal</td>
+                        <td>Cliente</td>
+                        <td>Producto</td>
+                        <td>Presentación</td>
+                        <td>Temporada</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (clsAppNetProyeccionForeCast_Items objItem in Model)
+                    {
+                        <tr>
+                            <td>@objItem.Canal.Nombre</td>
+                            <td>@objItem.Cliente.Nombre</td>
+                            <td>@objItem.Productos.Nombre</td>
+                            <td>@objItem.Presentacion.Nombre</td>
+                            <td>@objItem.Nombre</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <div class="row">
+        <div class="col-md-5"></div>
+        <div class="col-md-2">
+            <div class="btn btn-default btn-sm w-100" data-dismiss="modal">
+                Cerrar
+            </div>
+        </div>
+    </div>
+</div>

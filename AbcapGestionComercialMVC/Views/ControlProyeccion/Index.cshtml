@@ -1,0 +1,166 @@
+﻿@using AbcapGestionComercialMVC.Models.Clases
+@model clsProyeccionVenta
+@{
+    ViewBag.Title = "Proyección Venta";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+    serializer.MaxJsonLength = 999999999;
+}
+<div class="container">
+    @Html.Hidden("hdfIDProyeccionVenta", (Model != null) ? Model.ID.ToString() : "-1")
+    @Html.Hidden("hdfColumnas", (Model != null) ? serializer.Serialize(Model.lstColumnas) : "")
+    @Html.Hidden("hdfDetalleProyeccion", (Model != null) ? serializer.Serialize(Model.lstDetalleProyeccionResumen) : "")
+    @Html.Hidden("hdfClientes", (Model != null) ? serializer.Serialize(Model.lstClientes) : "")
+    @Html.Hidden("hdfProductos", (Model != null) ? serializer.Serialize(Model.lstProductos) : "")
+    @Html.Hidden("hdfPresentaciones", (Model != null) ? serializer.Serialize(Model.lstPresentaciones) : "")
+    @Html.Hidden("hdfTemporadas", (Model != null) ? serializer.Serialize(Model.lstTemporadas) : "")
+    @Html.Hidden("hdfPeriodos", (Model != null) ? serializer.Serialize(Model.lstPeriodos) : "")
+    <div class="row pt1">
+        <div class="col-md-12">
+            <div class="container-gridEdit">
+                <div class="cabeza">
+                    <div class="titulo">
+                        <b>Detalle proyección</b>
+                        <b style="float:right">@Html.Raw(Model != null ? Model.Nombre : string.Empty)<strong>@Html.Raw(ViewData["ddlCanal"] != null ? "Canal: " + ViewData["ddlCanal"].ToString() : "")</strong></b>
+                    </div>
+                    <div class="barraHerramientas">
+                        <span class="btn btn-sm btn-default"><span class="glyphicon glyphicon-chevron-left"></span> Atras</span>
+                        <span class="btn btn-sm btn-default">Adelante <span class="glyphicon glyphicon-chevron-right"></span></span>
+                        <span class="separador"></span>
+                        <span class="btn btn-sm btn-default btnAccion" accion="2"><span class="glyphicon glyphicon-plus-sign"></span> Cambiar canal</span>
+                        <span class="separador"></span>
+                        <span class="btn btn-sm btn-default btnAccion" accion="100"><span class="glyphicon glyphicon-plus-sign"></span> Agregar producto</span>
+                        <span class="btn btn-sm btn-default btnAccion" accion="100"><span class="glyphicon glyphicon-user"></span> Agregar cliente</span>
+                        <span class="btn btn-sm btn-default btnAccion" accion="102"><span class="glyphicon glyphicon-list"></span> Generar resumenes</span>
+                        <input type="checkbox" onclick="return controlScrollPersonalizado();" id="chkColumnasFijas" /><small>Columnas fijas</small>
+                        <span class="btn btn-sm btn-success right btnAccion" accion="900" style="float:right"><span class="glyphicon glyphicon-ok-circle"></span> Guardar</span>
+                    </div>
+                    <div class="barraHerramientas" style="height:auto">
+                        <div class="row">
+                            <div class="col-md-1 text-right pt1">
+                                <small>Filtros:</small>
+                            </div>
+                            <div class="col-md-2">
+                                <select id="DromnDownClientes" class="selectpicker show-menu-arrow form-control form-control-cmb-sm" multiple>
+                                    @*data-max-options="2"*@
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <select id="DromnDownProductos" class="selectpicker show-menu-arrow form-control form-control-cmb-sm" multiple></select>
+                            </div>
+                            <div class="col-md-2">
+                                <select id="DromnDownPresentacion" class="selectpicker show-menu-arrow form-control form-control-cmb-sm" multiple></select>
+                            </div>
+                            <div class="col-md-2">
+                                <select id="DromnDownTemporada" class="selectpicker show-menu-arrow form-control form-control-cmb-sm" multiple></select>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                </div>
+                <div class="cuerpo">
+                    <div class="scroll">
+                        <div class="scrroll-top">
+                            <span class="glyphicon glyphicon-chevron-up" style="font-size:11px" aria-hidden="true"></span>
+                        </div>
+                        <div class="scrroll-bottom">
+                            <span class="glyphicon glyphicon-chevron-down" style="font-size:11px" aria-hidden="true"></span>
+                        </div>
+                        <div class="scrroll-desplazo"></div>
+                    </div>
+                    <div class="tabla-datos" onscroll="controlScrollPersonalizado();">
+                        <div class="tabla-cabeza">
+                            <table>
+                                <thead id="tblColumnas"></thead>
+                            </table>
+                        </div>
+                        <div class="tabla-cuerpo">
+                            <table id="tblProyeccionVentaDetalle" class="table-sobre table-formatoProyeccion">
+                                <tbody id="tblDatosProyeccion"></tbody>
+                            </table>
+                        </div>
+                        <table id="tbl-Flotante">
+                            <thead class="tbl-Cabeza-Flotante tabla-cabeza">
+
+                            </thead>
+                            <tbody class="tbl-Cuerpop-Flotante tabla-cuerpo"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="Pie cabeza">
+                    <div class="barraHerramientas">
+                        <div class="row">
+                            <div class="col-md-3 text-left">
+                                <label id="lblSincronizacion"><strong>Última sincronización: MM/DD/YYYY HH:MM:SS    </strong></label>
+                            </div>
+                            <div class="col-md-2">
+
+                            </div>
+                            <div class="col-md-2">
+                                <label id="lblEstado">Estado: </label>
+                                <label class="alert-danger" id="CapEstado">Sincronizado</label>
+                            </div>
+                            <div class="col-md-2">
+
+                            </div>
+                            <div class="col-md-3 text-right">
+                                <label id="lblTotalResumen">0 al 0 registros de 000000</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="modal modal-sm fade" id="popupAgregarProducto" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Agregar producto</h4>
+            </div>
+            <div class="modal-body">
+                <p>One fine body&hellip;</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-sm btn-primary">Save changes</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<div class="modal modal-sm fade" id="popupConsultarProyecciones" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" id="cuerpoPopupConsultaProyecciones">
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<div class="modal modal-sm fade" id="popupNuevaProyecciones" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" id="cuerpoPopupNuevaProyecciones">
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script type="text/javascript" src="~/Scripts/jquery-1.10.2.js"></script>
+<script type="text/javascript" src="~/Scripts/ViewsJS/clasesControlProyeccion.js"></script>
+<script type="text/javascript" src="~/Scripts/ViewsJS/ControlProyeccion.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        cargarListados();
+        if ($('#hdfIDProyeccionVenta').val() == '-1') {
+            consultarProyecciones();
+        }
+    });
+</script>

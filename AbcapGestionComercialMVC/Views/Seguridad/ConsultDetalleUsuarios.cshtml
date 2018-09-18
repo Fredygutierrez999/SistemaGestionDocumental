@@ -1,0 +1,48 @@
+﻿@using AbcapGestionComercialMVC.Models.Clases.Seguridad
+@model List<clsAppNetUsuarios>
+
+@if (Model.Count > 0)
+{
+    <div class="panel-heading">
+        Resultado <span class="badge">0</span>
+    </div>
+    <div class="panel-body">
+        <table class="table table-condensed table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Usuario</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Correo Electrónico</th>
+                    <th>Telefono</th>
+                    <th>Inicio por ADDS</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (clsAppNetUsuarios objItem in Model)
+                {
+                <tr>
+                    <td>
+                        <a href="javascript:CreaModificaUsuario(@objItem.ID)" ;>
+                            @objItem.ID
+                        </a>
+                    </td>
+                    <td>@objItem.UserName</td>
+                    <td>@objItem.Nombre</td>
+                    <td>@objItem.Apellido</td>
+                    <td>@objItem.CorreoElectronico</td>
+                    <td>@objItem.Telefono</td>
+                    <td>@(objItem.LoginPorDirectorioActivo ? "Si" : "No")</td>
+                    <td style="color:@(objItem.Estado == 1 ? "black" : "red")">@(objItem.Estado == 1 ? "Activo" : "Inactivo")</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-warning">Sin datos</div>
+}

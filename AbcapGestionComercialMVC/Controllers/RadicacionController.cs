@@ -37,6 +37,8 @@ namespace GestionDocumental.Controllers
         {
             clsAppNetDocumentos objDocumento = null;
             clsRadicacionBD objRadicacionBD = new clsRadicacionBD();
+            clsBasico objBasicoBD = new clsBasico();
+
             List<clsAppNetTipoDocumentos> lstTipoDocumento = null;
 
             if (IDDocumento == null)
@@ -57,9 +59,11 @@ namespace GestionDocumental.Controllers
             }
             objDocumento.AppNetFlujoEstados = objRadicacionBD.consultaEstado(this.Usuario, (int)objDocumento.AppNetFlujoEstados.ID);
             lstTipoDocumento = objRadicacionBD.consultaListadoTipoDocumento(this.Usuario);
+            List<clsAppNetEmisor> lstEmisor = objBasicoBD.consultaListadoEmisor(-1, "-1", "-1");
 
             ViewBag.lstAcciones = new SelectList(objDocumento.AppNetFlujoEstados.lstAcciones, "ID", "Nombre");
             ViewBag.lstTiposDocumentos = new SelectList(lstTipoDocumento, "ID", "Nombre");
+            ViewBag.lstEmisores = new SelectList(lstEmisor, "ID", "Nombre");
 
             return View(objDocumento);
         }

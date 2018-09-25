@@ -50,6 +50,10 @@
     <Reference Include="dataAccessManager">
       <HintPath>..\..\..\..\..\..\Datos\DLL\dataAccessManager.dll</HintPath>
     </Reference>
+    <Reference Include="DataControllerUtility, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Datos\DLL\DataControllerUtility.dll</HintPath>
+    </Reference>
     <Reference Include="DocumentFormat.OpenXml, Version=2.5.5631.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\Datos\DLL\FrameWork 2.0\DocumentFormat.OpenXml.dll</HintPath>
@@ -170,6 +174,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Clases\Basico\clsEmisor.cs" />
     <Compile Include="Models\Clases\clsBasicoConfiguracion.cs" />
     <Compile Include="Models\Clases\clsCanal.cs" />
     <Compile Include="Models\Clases\clsCliente.cs" />
@@ -211,14 +216,17 @@
     <Compile Include="Models\Clases\Radicacion\clsAppNetDocumentos_Movimientos.cs" />
     <Compile Include="Models\Clases\Radicacion\clsAppNetDocumento_Soporte.cs" />
     <Compile Include="Models\Clases\Radicacion\clsAppNetEmisor.cs" />
+    <Compile Include="Models\Clases\Radicacion\clsAppNetEstadoProceso.cs" />
     <Compile Include="Models\Clases\Radicacion\clsAppNetFlujoEstados.cs" />
     <Compile Include="Models\Clases\Radicacion\clsAppNetFlujoEstados_Acciones.cs" />
     <Compile Include="Models\Clases\Radicacion\clsAppNetTipoDocumentos.cs" />
+    <Compile Include="Models\Clases\Radicacion\clsAppNetTipoNumero.cs" />
     <Compile Include="Models\Clases\Seguridad\clsAppNetMenu.cs" />
     <Compile Include="Models\Clases\Seguridad\clsAppNetMenu_Acciones.cs" />
     <Compile Include="Models\Clases\Seguridad\clsAppNetRoles.cs" />
     <Compile Include="Models\Clases\Seguridad\clsAppNetTipoRol.cs" />
     <Compile Include="Models\Clases\Seguridad\clsAppNetUsuarios.cs" />
+    <Compile Include="Models\ControladorDatos\clsBasico.cs" />
     <Compile Include="Models\ControladorDatos\clsConfgiruacionBD.cs" />
     <Compile Include="Models\ControladorDatos\clsConfiguracionConexion.cs" />
     <Compile Include="Models\ControladorDatos\clsForeCastBD.cs" />
@@ -258,6 +266,8 @@
     <Content Include="Content\jquery-ui.min.css" />
     <Content Include="Content\jquery.dataTables.min.css" />
     <Content Include="Content\StyleEscanerDocumental.css" />
+    <Content Include="Dll\DataControllerUtility.dll" />
+    <Content Include="Dll\Newtonsoft.Json.dll" />
     <Content Include="favinco.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -555,6 +565,7 @@
     <Content Include="Scripts\rollups\sha512.js" />
     <Content Include="Scripts\rollups\tripledes.js" />
     <Content Include="Scripts\ViewsJS\clasesControlProyeccion.js" />
+    <Content Include="Scripts\ViewsJS\ControlBasico.js" />
     <Content Include="Scripts\ViewsJS\ControlConfiguracionClientesProductos.js" />
     <Content Include="Scripts\ViewsJS\ControlConsolidacion.js" />
     <Content Include="Scripts\ViewsJS\ControlProductos.js" />
@@ -623,6 +634,9 @@
     <Content Include="Views\Radicacion\MisDocumentos_Detalle.cshtml" />
     <Content Include="Views\Radicacion\MisDocumentos_Movimientos.cshtml" />
     <Content Include="Views\Basico\ConfiguracionDocumentos.cshtml" />
+    <Content Include="Views\Basico\Emisor.cshtml" />
+    <Content Include="Views\Basico\AdministrarEmisor.cshtml" />
+    <Content Include="Views\Basico\Emisor_Listados.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -631,12 +645,6 @@
   <ItemGroup>
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\..\Datos\Proyectos Visual\2015\DataControllerUtility\DataControllerUtility.csproj">
-      <Project>{9ad9303c-ce3e-49f3-a986-6f638679f839}</Project>
-      <Name>DataControllerUtility</Name>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -68,13 +68,13 @@
                 </div>
                 <div class="row pt1">
                     <div class="col-md-1  col-xs-2 text-right">
-                        <small>Proveedor:</small>
+                        <small>Emisor:</small>
                     </div>
                     <div class="col-md-3  col-xs-4">
-                        <input type="text" class="form-control form-control-smX" />
+                        <input id="txtBuscaEmisor" type="text" class="form-control form-control-smX" onkeypress="buscarEmisorKeyPres(this);" />
                     </div>
                     <div class="col-md-6  col-xs-6">
-                        @Html.DropDownListFor(m => m.IDAppNetEmisor.ID, ((SelectList)ViewBag.lstTiposDocumentos).ToList(), new { @class = "form-control form-control-sm form-control-cmb-sm" })
+                        @Html.DropDownListFor(m => m.IDAppNetEmisor.ID, ((SelectList)ViewBag.lstEmisores).ToList(), new { @class = "form-control form-control-sm form-control-cmb-sm" })
                     </div>
                 </div>
                 <div class="row pt1">

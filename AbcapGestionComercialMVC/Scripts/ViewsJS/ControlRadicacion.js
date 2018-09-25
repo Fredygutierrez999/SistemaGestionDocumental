@@ -164,3 +164,33 @@ function consultarMovimiento(XIDDocumento) {
         }
     });
 }
+
+/**
+ * Captura key press tecla
+ * @param {any} txt
+ */
+function buscarEmisorKeyPres(e) {
+    if (event.keyCode == 13) {
+        var xFiltro = $('#txtBuscaEmisor').val();
+        $.ajax({
+            url: "/Basico/Emisor_ListadosJson",
+            type: "POST",
+            data: "xFiltro=" + xFiltro,
+            dataType: "JSON",
+            success: function (data) {
+                if (data.ResultadoProceso) {
+                    var strHtml = "";
+                    for (var i = 0; i < data.objResultado.length; i++) {
+                        strHtml += '<option value="' + data.objResultado[i].ID + '">' + data.objResultado[i].Nombre + '</option>';
+                    }
+                    $('#IDAppNetEmisor_ID').html(strHtml);
+                } else {
+                    mostrarMensaje(2, data.MensajeProceso);
+                }
+            },
+            error: function (jqXHR, textStatus, error) {
+                mostrarMensaje(2, error);
+            }
+        });
+    }
+}

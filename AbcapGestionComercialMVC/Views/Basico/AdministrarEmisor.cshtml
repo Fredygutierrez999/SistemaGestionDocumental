@@ -1,0 +1,66 @@
+﻿@using GestionDocumental.Models.Clases.Radicacion;
+@model clsAppNetEmisor
+<div class="modal-header bg-warning">
+    <h5 class="modal-title" id="TituloPopupMensajeGenerico">Inserta / Modifica Emisor</h5>
+    <button type="button" class="close " data-dismiss="modal" aria-label="Close" style="display:none">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+@using (Html.BeginForm("AdministrarEmisor", "Basico", FormMethod.Post, new { @ID = "fmrAdministrarEmisor" }))
+{
+    <div class="modal-body" id="contenidoArchivo" style="padding: 5px 20px 0px 0px;">
+        <div class="row">
+            <div class="col-md-2 text-right">
+                <label>ID:</label>
+            </div>
+            <div class="col-md-2">
+                @Html.TextBoxFor(m => m.ID, new { @class = "form-control form-control-Xsm", @disabled = "disabled" })
+                @Html.HiddenFor(m => m.ID)
+            </div>
+        </div>
+        <div class="row pt1">
+            <div class="col-md-2 text-right">
+                <label>Tipo Número:</label>
+            </div>
+            <div class="col-md-4">
+                @Html.DropDownListFor(m => m.IDAppNetTipoNumero, ((SelectList)ViewBag.tipoNumeroDocumento).ToList(), new { @class = "form-control form-control-Xsm" })
+            </div>
+            <div class="col-md-2 text-right">
+                <label>Número:</label>
+            </div>
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.Numero, new { @class = "form-control form-control-Xsm" })
+            </div>
+        </div>
+        <div class="row pt1">
+            <div class="col-md-2 text-right">
+                <label>Nombre:</label>
+            </div>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control form-control-Xsm" })
+            </div>
+        </div>
+        <div class="row pt1">
+            <div class="col-md-4 text-right"></div>
+            <div class="col-md-2 text-right">
+                <label>Estado:</label>
+            </div>
+            <div class="col-md-3 text-right">
+                @Html.DropDownListFor(m => m.IDAppNetEstados, ((SelectList)ViewBag.estadosEmisor).ToList(), new { @class = "form-control form-control-Xsm" })
+            </div>
+        </div>
+    </div>
+}
+<div class="modal-footer p-2">
+    <div class="row">
+        <div class="col-md-4">
+
+        </div>
+        <div class="col-md-2">
+            <button tabindex="2" type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cerrar</button>
+        </div>
+        <div class="col-md-2">
+            <button tabindex="2" type="button" class="btn btn-sm btn-success" onclick="GuardaModificarEmisor();">Guardar</button>
+        </div>
+    </div>
+</div>

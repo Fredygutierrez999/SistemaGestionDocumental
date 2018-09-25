@@ -110,6 +110,21 @@ namespace AbcapGestionComercialMVC.Models.ControladorDatos
         /// </summary>
         /// <param name="xStrCandea"></param>
         /// <returns></returns>
+        public static int validaCadenaNUllAEnteroMenosUno(string xStrCandea)
+        {
+            int xIDSalida = 0;
+            if (!int.TryParse(xStrCandea, out xIDSalida))
+            {
+                xIDSalida = -1;
+            }
+            return xIDSalida;
+        }
+
+        /// <summary>
+        /// Metodo encargado de retornar un valor -1 si la cadena es nula
+        /// </summary>
+        /// <param name="xStrCandea"></param>
+        /// <returns></returns>
         public static int validaEnteroCeroAMenosUno(int xValor)
         {
             return xValor == 0 ? -1 : xValor;

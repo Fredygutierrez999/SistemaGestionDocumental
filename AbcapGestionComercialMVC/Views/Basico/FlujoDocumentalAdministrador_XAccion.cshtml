@@ -1,0 +1,62 @@
+﻿@using GestionDocumental.Models.Clases.Radicacion
+@model clsAppNetFlujoEstados_Acciones
+<div class="modal-header">
+    Crear / Modificar acción
+</div>
+<div class="modal-body">
+
+    @using (Html.BeginForm("GuardarAccionTemporal", "Basico", FormMethod.Post, new { @id = "fmrAccionTemporal" }))
+    {
+        <div class="row">
+            <div class="col-md-1 text-right">
+                <small>ID:</small>
+            </div>
+            <div class="col-md-2 text-right">
+                @Html.TextBoxFor(m => m.ID, new { @class = "form-control form-control-sm", @readonly = "readonly" })
+                @Html.HiddenFor(m => m.ID, new { @class = "form-control form-control-sm" })
+                @Html.HiddenFor(m => m.guidUnico, new { @class = "form-control form-control-sm" })
+            </div>
+            <div class="col-md-2 text-right">
+                <small>Nombre:</small>
+            </div>
+            <div class="col-md-7 text-right">
+                @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control form-control-smX" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 text-right">
+                @Html.CheckBoxFor(m => m.estadoAnterior)
+            </div>
+            <div class="col-md-10 text-left">
+                <small>Seleccionar usuario anterior</small>
+            </div>
+        </div>
+        <hr></hr>
+        <div class="row">
+            <div class="col-md-3 text-right">
+                <small>Siguiente estado:</small>
+            </div>
+            <div class="col-md-10 text-left">
+                @Html.DropDownListFor(m => m.IDAppNetFlujoEstados_Sigiente, ((SelectList)ViewBag.lstEstados).ToList(), new { @class = "form-control form-control-sm form-control-cmb-sm", @onchange = "consultarDetalle();cambiaEstado(this);" })
+            </div>
+        </div>
+    }
+
+</div>
+<div class="modal-footer">
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-3">
+            <div class="btn btn-sm btn-default" data-dismiss="modal">
+                Cerrar
+                <span class="glyphicon glyphicon-folder-close"></span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="btn btn-sm btn-success" onclick="guardarAccionTemporal()">
+                Guardar
+                <span class="glyphicon glyphicon-ok-circle"></span>
+            </div>
+        </div>
+    </div>
+</div>

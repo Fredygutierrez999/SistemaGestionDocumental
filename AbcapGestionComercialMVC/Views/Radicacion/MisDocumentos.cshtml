@@ -23,7 +23,7 @@
                         <small>Estado:</small>
                     </div>
                     <div class="col-md-3">
-                        @Html.DropDownListFor(m => m.xBIDEstadoDocumento, ((SelectList)ViewBag.lstEstados).ToList(), new { @class = "form-control form-control-sm form-control-cmb-sm" })
+                        @Html.DropDownListFor(m => m.xBIDEstadoDocumento, ((SelectList)ViewBag.lstEstados).ToList(), new { @class = "form-control form-control-sm form-control-cmb-sm", @onchange = "consultarDetalle();cambiaEstado(this);" })
                     </div>
                 </div>
                 <hr />
@@ -95,7 +95,49 @@
                 <div class="col-md-12" id="contenidoDetalle">
                 </div>
             </div>
+            <div class="row pt1">
+                <div class="col-md-3 pt1">
+                    <label>Facturas seleccionadas: </label><span class="badge" id="lblCantidadSeleccion">0</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12" id="contenidoItemsSeleccionadosDetalle">
 
+                </div>
+            </div>
+            <div class="row pt1">
+                <div class="col-md-3 pt1">
+                    <label>Asignación masiva:</label>
+                </div>
+            </div>
+            <div class="row" id="contenidoSinItemsSeleccionadosDetalle">
+                <div class="col-md-12">
+                    <small>Sin acciones.</small>
+                </div>
+            </div>
+            <div class="row" id="contenidoConResponsable"  style="display:none">
+                <div class="col-md-1 text-right">
+                    <label>Acción: </label>
+                </div>
+                <div class="col-md-4">
+                    <select id="cmbAccionesEstados" class="form-control form-control-smX form-control-cmb-sm" onchange="cargarResponsableEstado(this)">
+                        <option value="-1">--Seleccione una acción--</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label>Responsable: </label>
+                </div>
+                <div class="col-md-4">
+                    <select id="cmbAccionesResponsable" class="form-control form-control-smX form-control-cmb-sm">
+                        <option value="-1">--Sin responsable--</option>
+                    </select>
+                </div>
+                <div class="col-md-1"> 
+                    <div class="btn btn-sm btn-success" onclick="asignarDocumentosASiguienteEstado();">
+                        Asignar
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

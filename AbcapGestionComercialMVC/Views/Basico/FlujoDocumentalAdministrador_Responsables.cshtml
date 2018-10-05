@@ -1,0 +1,21 @@
+﻿@using GestionDocumental.Models.Clases.Radicacion;
+@model List<clsAppNetFlujoEstados_Acciones>
+<table class="table table-condensed table-bordered table-hover">
+    <thead>
+        <tr>
+            <td>ID</td>
+            <td>Nombres</td>
+            <td>Sel.</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (clsAppNetFlujoEstados_Acciones objAccion in Model)
+        {
+            <tr>
+                <td style="padding: 0px;"><a href="javascript:AministrarEstado_Acciones(@objAccion.ID)">@objAccion.ID</a></td>
+                <td style="padding: 0px;">@objAccion.Nombre</td>
+                <td style="padding: 0px;">@Html.CheckBox("xIdChkt", false)</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -10,5 +10,7 @@ namespace GestionDocumental.Models.Clases.Radicacion
     {
         public int IDAppNetFlujoEstados_Sigiente { get; set; }
         public int IDAppNetEstado { get; set; }
+        public bool estadoAnterior { get; set; }
+        public string guidUnico { get; set; }
     }
 }

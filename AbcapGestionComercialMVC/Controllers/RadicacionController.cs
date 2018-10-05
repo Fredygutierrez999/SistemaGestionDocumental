@@ -100,7 +100,7 @@ namespace GestionDocumental.Controllers
                     for (int i = 0; i < xCantidadArchivo; i++)
                     {
                         string xNuevoNombre = Guid.NewGuid().ToString().Replace("-", "");
-                        string xNombre = string.IsNullOrEmpty(Path.GetExtension(Request.Files[i].FileName)) ? "Abjunto_PDF_" + DateTime.Now.ToString("yyyy-mm-dd HH:MM") : Request.Files[i].FileName; 
+                        string xNombre = string.IsNullOrEmpty(Path.GetExtension(Request.Files[i].FileName)) ? "Abjunto_PDF_" + DateTime.Now.ToString("yyyy-mm-dd HH:MM") : Request.Files[i].FileName;
                         string xExtension = string.IsNullOrEmpty(Path.GetExtension(xNombre)) ? ".PDF" : Path.GetExtension(xNombre);
                         int xTamano = Request.Files[i].ContentLength;
                         string xSoloNombre = Path.GetFileNameWithoutExtension(xNombre);
@@ -204,12 +204,14 @@ namespace GestionDocumental.Controllers
         public ViewResult MisDocumentos()
         {
             clsRadicacionBD objRadicacionBD = new clsRadicacionBD();
-            
+
             List<clsAppNetTipoDocumentos> lstTipoDocumento = new List<clsAppNetTipoDocumentos>();
             lstTipoDocumento.Add(new clsAppNetTipoDocumentos() { ID = -1, Nombre = "--No aplica--" });
             lstTipoDocumento.AddRange(objRadicacionBD.consultaListadoTipoDocumento(this.Usuario));
 
-            List<clsAppNetFlujoEstados> lstFlujo = objRadicacionBD.consultaListadoEstados(this.Usuario);
+            List<clsAppNetFlujoEstados> lstFlujo = new List<clsAppNetFlujoEstados>();
+            lstFlujo.Add(new clsAppNetFlujoEstados() { ID = -1, Nombre = "--Todos--" });
+            lstFlujo.AddRange(objRadicacionBD.consultaListadoEstados(this.Usuario));
 
             ViewBag.lstTiposDocumentos = new SelectList(lstTipoDocumento, "ID", "Nombre");
             ViewBag.lstEstados = new SelectList(lstFlujo, "ID", "Nombre");
@@ -227,8 +229,25 @@ namespace GestionDocumental.Controllers
         {
             clsRadicacionBD objRadicacionBD = new clsRadicacionBD();
             List<clsAppNetDocumentos> lstDocumento = objRadicacionBD.consultaListadoDocumentos(this.Usuario, objFiltro);
+            ViewBag.permiteSeleccionar = true;
             return PartialView(lstDocumento);
         }
+
+
+        /// <summary>
+        /// Metodo utilizado para consultar listado de documentos
+        /// </summary>
+        /// <param name="objFiltro"></param>
+        /// <returns></returns>
+        public PartialViewResult MisDocumentos_Detalle_Todos(clsAppNetDocumentos_Filtros objFiltro)
+        {
+            clsRadicacionBD objRadicacionBD = new clsRadicacionBD();
+            clsAppNetUsuarios objUsuarioTemporal = new clsAppNetUsuarios() { ID = -1, IDAdministrador = this.Usuario.IDAdministrador };
+            List<clsAppNetDocumentos> lstDocumento = objRadicacionBD.consultaListadoDocumentos(objUsuarioTemporal, objFiltro);
+            ViewBag.permiteSeleccionar = false;
+            return PartialView("MisDocumentos_Detalle", lstDocumento);
+        }
+
 
         /// <summary>
         /// Metodo utilizado para consultar todos documentos
@@ -236,6 +255,19 @@ namespace GestionDocumental.Controllers
         /// <returns></returns>
         public ViewResult ConsultaDocumentos()
         {
+            clsRadicacionBD objRadicacionBD = new clsRadicacionBD();
+
+            List<clsAppNetTipoDocumentos> lstTipoDocumento = new List<clsAppNetTipoDocumentos>();
+            lstTipoDocumento.Add(new clsAppNetTipoDocumentos() { ID = -1, Nombre = "--No aplica--" });
+            lstTipoDocumento.AddRange(objRadicacionBD.consultaListadoTipoDocumento(this.Usuario));
+
+            List<clsAppNetFlujoEstados> lstFlujo = new List<clsAppNetFlujoEstados>();
+            lstFlujo.Add(new clsAppNetFlujoEstados() { ID = -1, Nombre = "--Todos--" });
+            lstFlujo.AddRange(objRadicacionBD.consultaListadoEstados(this.Usuario));
+
+            ViewBag.lstTiposDocumentos = new SelectList(lstTipoDocumento, "ID", "Nombre");
+            ViewBag.lstEstados = new SelectList(lstFlujo, "ID", "Nombre");
+            ViewBag.lstEstadosData = lstFlujo;
             return View();
         }
 
@@ -249,6 +281,49 @@ namespace GestionDocumental.Controllers
             clsRadicacionBD objRadicacionBD = new clsRadicacionBD();
             List<clsAppNetDocumentos_Movimientos> lstMovimientos = objRadicacionBD.consultaListadoMovimientos(this.Usuario, xIDDocumento);
             return PartialView(lstMovimientos);
+        }
+
+        /// <summary>
+        /// Consulta estado por ID
+        /// </summary>
+        /// <param name="xID"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult consultaEstados(int xID)
+        {
+            clsRadicacionBD objRadicacionBD = new clsRadicacionBD();
+            List<clsAppNetFlujoEstados> lstFlujo = objRadicacionBD.consultaListadoEstados(this.Usuario, xID);
+            return Json(lstFlujo[0]);
+        }
+
+
+        /// <summary>
+        /// Consulta estado por ID
+        /// </summary>
+        /// <param name="xID"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult consultaListadoResponsables(int xIDEstado, int xIDAccion)
+        {
+            clsRadicacionBD objRadicacionBD = new clsRadicacionBD();
+            List<clsAppNetUsuarios> lstUsuario = objRadicacionBD.consultaListadoResponsables(xIDEstado, xIDAccion, this.Usuario);
+            return Json(lstUsuario);
+        }
+
+        /// <summary>
+        /// Metodo utilizado para asignar documentos asignados a siguiente estado
+        /// </summary>
+        /// <param name="xIDDocumentos"></param>
+        /// <param name="xEstado"></param>
+        /// <param name="xAccion"></param>
+        /// <param name="xIDResponsable"></param>
+        /// <returns></returns>
+        public JsonResult asignacionDocumentosASiguienteEstado(string xIDDocumentos, int xEstado, int xAccion, int xIDResponsable)
+        {
+            clsResultadoJson objResultado = new clsResultadoJson();
+            clsRadicacionBD objRadicacionBD = new clsRadicacionBD();
+            objResultado = objRadicacionBD.asignacionFlujoDocumentos(xIDDocumentos, xEstado, xAccion, xIDResponsable, this.Usuario);
+            return Json(objResultado);
         }
 
     }

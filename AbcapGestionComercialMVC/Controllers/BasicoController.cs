@@ -119,5 +119,110 @@ namespace GestionDocumental.Controllers
             return Json(objResultadoJson);
         }
 
+        /// <summary>
+        /// Vista de flujo documental
+        /// </summary>
+        /// <returns></returns>
+        public ViewResult FlujoDocumental()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// Metodo utilizado para listar los emisores
+        /// </summary>
+        /// <returns></returns>
+        public PartialViewResult FlujoDocumental_Listados(string xID, string xNombre)
+        {
+            clsBasico objBasico = new clsBasico();
+            clsRadicacionBD objRadicaBD = new clsRadicacionBD();
+            int xIDEntero = clsGeneralBD.validaCadenaNUllAEnteroMenosUno(xID);
+            List<clsAppNetFlujoEstados> lstEstados = objRadicaBD.consultaListadoEstados(this.Usuario, xIDEntero, clsGeneralBD.validaCadenaNUllAMenosUno(xNombre));
+            return PartialView(lstEstados);
+        }
+
+        /// <summary>
+        /// Metodo utilizado para administrar flujo de documentos
+        /// </summary>
+        /// <param name="xID"></param>
+        /// <returns></returns>
+        public PartialViewResult FlujoDocumentalAdministrador(int xID)
+        {
+            clsAppNetFlujoEstados objEstados;
+            clsRadicacionBD objRadicaBD = new clsRadicacionBD();
+            if (xID == -1)
+            {
+                objEstados = new clsAppNetFlujoEstados();
+            }
+            else
+            {
+                objEstados = objRadicaBD.consultaListadoEstados(this.Usuario, xID)[0];
+            }
+            ViewBag.Guid = Guid.NewGuid().ToString();
+            objRadicaBD.cargaTablaTemporalAcciones(ViewBag.Guid, xID);
+            return PartialView(objEstados);
+        }
+
+
+        /// <summary>
+        /// Metodo utilizado para administrar flujo de documentos
+        /// </summary>
+        /// <param name="xID"></param>
+        /// <returns></returns>
+        public PartialViewResult FlujoDocumentalAdministrador_Responsables(string xIDGuid)
+        {
+            List<clsAppNetFlujoEstados_Acciones> objAcciones;
+            clsRadicacionBD objRadicaBD = new clsRadicacionBD();
+            objAcciones = objRadicaBD.cargaTemporalPorGuid(xIDGuid);
+            return PartialView(objAcciones);
+        }
+
+
+
+        /// <summary>
+        /// Metodo utilizado para administrar flujo de documentos por ID
+        /// </summary>
+        /// <param name="xID"></param>
+        /// <returns></returns>
+        public PartialViewResult FlujoDocumentalAdministrador_XAccion(string xIDGuid, int xID)
+        {
+            List<clsAppNetFlujoEstados_Acciones> objAcciones;
+            clsRadicacionBD objRadicaBD = new clsRadicacionBD();
+            objAcciones = objRadicaBD.cargaTemporalPorGuid(xIDGuid);
+            clsAppNetFlujoEstados_Acciones objAccion = null;
+            if (xID != -1)
+            {
+                objAccion = objAcciones.Find(delegate (clsAppNetFlujoEstados_Acciones objAccionItem) { return objAccionItem.ID == xID; });
+            }
+            else
+            {
+                objAccion = new clsAppNetFlujoEstados_Acciones();
+            }
+
+            List<clsAppNetFlujoEstados> lstFlujo = new List<clsAppNetFlujoEstados>();
+            lstFlujo.AddRange(objRadicaBD.consultaListadoEstados(this.Usuario));
+
+            ViewBag.lstEstados = new SelectList(lstFlujo, "ID", "Nombre");
+            ViewBag.lstEstadosData = lstFlujo;
+
+            objAccion.guidUnico = xIDGuid;
+            return PartialView(objAccion);
+        }
+
+        /// <summary>
+        /// Guarda acción
+        /// </summary>
+        /// <param name="objAccion"></param>
+        /// <returns></returns>
+        public JsonResult GuardarAccionTemporal(clsAppNetFlujoEstados_Acciones objAccion)
+        {
+            clsResultadoJson objEstado = new clsResultadoJson();
+            clsRadicacionBD objRadicacion = new clsRadicacionBD();
+
+            objEstado = objRadicacion.guardarAccionTemporal(objAccion, this.Usuario);
+
+            return Json(objEstado);
+        }
+
     }
 }

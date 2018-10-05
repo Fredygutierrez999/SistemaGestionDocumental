@@ -10,9 +10,12 @@ namespace GestionDocumental.Models.Clases.Radicacion
     {
         public int IDAppNetAdministrador { get; set; }
         public bool ConCorreo { get; set; }
+        public bool SeleccionaUsuarioAnterior { get; set; }
+        public bool SeleccionaUsuarioActual { get; set; }
         public bool ConCorreoGrupo { get; set; }
         public int IDAppNetEstado { get; set; }
         public string TextoBtn { get; set; }
+        public bool OPcionMasiva { get; set; }
 
         public List<clsAppNetFlujoEstados_Acciones> lstAcciones { get; set; }
 

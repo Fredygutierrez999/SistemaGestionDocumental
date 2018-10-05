@@ -1,24 +1,36 @@
 ﻿@using GestionDocumental.Models.Clases.Radicacion
 @model List<clsAppNetDocumentos>
+@{
+    var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+    serializer.MaxJsonLength = 999999999;
+    var permiteSeleccionar = (bool)ViewBag.permiteSeleccionar;
+}
 
 <table class="table table-condensed table-hover table-responsive table-bordered">
     <thead>
         <tr>
             <td>ID</td>
             <td>N. Documento</td>
-            <td>Fecha Documento</td>
-            <td>Fecha Radicación</td>
-            <td>Fecha Creación</td>
+            <td>Tipo</td>
             <td>Emisor</td>
-            <td>Usuario creación</td>
+            <td>Fecha Documento</td>
+            <td>Fecha Recepción</td>
             <td>Usuario modificación</td>
             <td>Último Mov.</td>
+            <td>Estado</td>
             <td class="text-center">
                 <span class="glyphicon glyphicon-file"></span>
             </td>
             <td class="text-center">
                 <span class="glyphicon glyphicon-list"></span>
             </td>
+            @if (permiteSeleccionar)
+            {
+                <td title="Seleccionar todos los documentos.">
+                    Sel
+                    <input type="checkbox" id="chkTodosDocumentos" onclick="SeleccionarTodosLosDocumentos()" />
+                </td>
+            }
         </tr>
     </thead>
     <tbody>
@@ -31,20 +43,27 @@
                     </a>
                 </td>
                 <td>@objItem.NumeroDocumento</td>
+                <td>@objItem.AppNetTipoDocumentos.Nombre</td>
+                <td>@objItem.IDAppNetEmisor.Nombre</td>
                 <td>@objItem.FechaDocumento.ToString("MM/dd/yyyy")</td>
                 <td>@objItem.FechaRecepcion.ToString("MM/dd/yyyy")</td>
-                <td>@objItem.FechaCreacion.ToString("MM/dd/yyyy")</td>
-                <td>Emisor</td>
-                <td>@objItem.AppNetUsuariosCreacion.Nombre</td>
                 <td>@objItem.AppNetUsuariosModificacion.Nombre</td>
                 <td>@objItem.FechaModificacion.ToString("MM/dd/yyyy")</td>
+                <td>@objItem.AppNetFlujoEstados.Nombre</td>
                 <td class="text-center">
-                    <span class="glyphicon glyphicon-file pointer" style="color:brown" onclick="verSoportesDocumentos(@objItem.ID,'@Json.Encode(@objItem.lstSoportes)');" ></span>
+                    <span class="glyphicon glyphicon-file pointer" style="color:brown" onclick="verSoportesDocumentos(@objItem.ID,'@Json.Encode(@objItem.lstSoportes)');"></span>
                     <span class="badge">@objItem.lstSoportes.Count</span>
                 </td>
                 <td class="text-center">
                     <span class="glyphicon glyphicon-list pointer" onclick="consultarMovimiento(@objItem.ID)" style="color:brown"></span>
                 </td>
+                @if (permiteSeleccionar)
+                {
+                    <td>
+                        Sel.
+                        <input type="checkbox" data="@serializer.Serialize(objItem)" id="chkSeleccionaItem_@objItem.ID" onclick="SeleccionarItem(this,@objItem.ID);" />
+                    </td>
+                }
             </tr>
         }
     </tbody>

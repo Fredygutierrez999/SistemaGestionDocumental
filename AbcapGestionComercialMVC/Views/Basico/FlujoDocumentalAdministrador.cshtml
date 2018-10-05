@@ -1,0 +1,126 @@
+﻿@using GestionDocumental.Models.Clases.Radicacion
+@model clsAppNetFlujoEstados
+@{
+    string xGuid = ViewBag.Guid;
+}
+<div class="modal-header">
+
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-2 text-right">
+            <small>ID:</small>
+        </div>
+        <div class="col-md-2">
+            @Html.TextBoxFor(m => m.ID, new { @class = "form-control form-control-smX", @readOnly = "readOnly" })
+            @Html.HiddenFor(m => m.ID)
+            @Html.Hidden("hdfGuid", xGuid)
+        </div>
+        <div class="col-md-2 text-right">
+            <small>Nombre:</small>
+        </div>
+        <div class="col-md-6">
+            @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control form-control-smX" })
+        </div>
+    </div>
+    <hr />
+    <strong>
+        Configuración estado
+    </strong>
+    <div class="row">
+        <div class="col-md-2 text-right">
+            @Html.CheckBoxFor(m => m.ConCorreo)
+        </div>
+        <div class="col-md-3">
+            <small title="Marque esta opción para enviar un correo al usuario al caer un documento en este estado.">Envia correo al usuario</small>
+        </div>
+        <div class="col-md-1 text-right">
+            @Html.CheckBoxFor(m => m.ConCorreoGrupo)
+        </div>
+        <div class="col-md-3">
+            <small title="Marque esta opción para enviar un correo al grupo al caer un documento en este estado.">Envia correo al grupo</small>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2 text-right">
+            @Html.CheckBoxFor(m => m.OPcionMasiva)
+        </div>
+        <div class="col-md-3">
+            <small title="Marque esta opción para utilizar este estado en una carga masiva.">Opción masiva</small>
+        </div>
+        <div class="col-md-1 text-right">
+            @Html.CheckBoxFor(m => m.SeleccionaUsuarioAnterior)
+        </div>
+        <div class="col-md-3">
+            <small title="Marque esta opción para colocar como responsable al usuario que envio el documento al presente estado.">Seleccionar Usuario actual</small>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2 text-right">
+            @Html.CheckBoxFor(m => m.SeleccionaUsuarioActual)
+        </div>
+        <div class="col-md-3">
+            <small title="Marque esta opción para colocar como responsable al usuario actual como responsable.">Seleccionar Usuario actual</small>
+        </div>
+        <div class="col-md-3 text-right">
+            <small>Text a mostrar:</small>
+        </div>
+        <div class="col-md-2 text-right">
+            @Html.TextBoxFor(m => m.TextoBtn, new { @class = "form-control form-control-smX" })
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <strong>
+                Acciones del estado
+            </strong>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <div class="btn btn-sm btn-success" onclick="AministrarEstado_Acciones(-1)">
+                Agregar
+            </div>
+        </div>
+        <div class="col-md-8"></div>
+        <div class="col-md-2">
+            <div class="btn btn-sm btn-warning">
+                Eliminar
+            </div>
+        </div>
+    </div>
+    <div class="row pt1">
+        <div class="col-md-12" id="divAccionesEstado">
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <strong>
+                Responsables
+            </strong>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12" id="divResponsablesEstado">
+
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-2">
+            <div class="btn btn-sm btn-default" data-dismiss="modal">
+                Cerrar
+                <span class="glyphicon glyphicon-folder-close"></span>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="btn btn-sm btn-success">
+                Guardar
+                <span class="glyphicon glyphicon-ok-circle"></span>
+            </div>
+        </div>
+    </div>
+</div>

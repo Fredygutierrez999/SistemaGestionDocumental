@@ -151,11 +151,41 @@ namespace GestionDocumental.Models.ControladorDatos
         }
 
         /// <summary>
+        /// Valida el número de documento
+        /// </summary>
+        /// <param name="objDocumento"></param>
+        /// <returns></returns>
+        private List<string> validaNumeroDocumento(clsAppNetUsuarios objUsuario, clsAppNetDocumentos objDocumento)
+        {
+            List<string> lstItems = new List<string>();
+            this.objControlador.setCommand("[AppNetDocumentos_Guardar_validacion]");
+            this.objControlador.addNewParameter("@ID", objDocumento.ID);
+            this.objControlador.addNewParameter("@IDAppNetAdministrador", objUsuario.IDAdministrador);
+            this.objControlador.addNewParameter("@IDAppNetFlujoEstados", objDocumento.AppNetFlujoEstados.ID);
+            this.objControlador.addNewParameter("@IDAppNetFlujoEstados_Accion", objDocumento.IDSiguienteAccion);
+            this.objControlador.addNewParameter("@IDAppNetTipoDocumentos", objDocumento.AppNetTipoDocumentos.ID);
+            this.objControlador.addNewParameter("@IDAppNetEmisor", objDocumento.IDAppNetEmisor.ID);
+            this.objControlador.addNewParameter("@NumeroDocumento", objDocumento.NumeroDocumento);
+            this.objControlador.addNewParameter("@FechaDocumento", objDocumento.FechaDocumento);
+            this.objControlador.addNewParameter("@FechaRecepcion", objDocumento.FechaRecepcion);
+            this.objControlador.addNewParameter("@Nota", clsGeneralBD.validaCadenaNUllAVacio(objDocumento.Nota));
+            this.objControlador.addNewParameter("@IDAppNetUsuariosCreacion", objUsuario.ID);
+            this.objControlador.addNewParameter("@GuiDUnicoArchivos", objDocumento.getIDUnicoObjeto);
+            this.objControlador.addNewParameter("@IDArchivosEliminados", clsGeneralBD.validaCadenaNUllAVacio(objDocumento.xIDArchivosEliminados));
+            DataTable dttDatos = this.objControlador.execTableResult();
+            for (var i = 0; i < dttDatos.Rows.Count; i++)
+            {
+                lstItems.Add(dttDatos.Rows[i]["Validaciones"].ToString());
+            }
+            return lstItems;
+        }
+
+        /// <summary>
         /// Proceso utilizado en validar datos
         /// </summary>
         /// <param name="objDocumento"></param>
         /// <returns></returns>
-        private List<string> validaDatosDocumento(clsAppNetDocumentos objDocumento)
+        private List<string> validaDatosDocumento(clsAppNetUsuarios objUsuario, clsAppNetDocumentos objDocumento)
         {
             List<string> lstValidacione = new List<string>();
             if (objDocumento.IDSiguienteAccion == -1)
@@ -178,6 +208,7 @@ namespace GestionDocumental.Models.ControladorDatos
             {
                 lstValidacione.Add("Debe indicar una fecha de recepción.");
             }
+            lstValidacione.AddRange(validaNumeroDocumento(objUsuario, objDocumento));
             return lstValidacione;
         }
 
@@ -190,7 +221,7 @@ namespace GestionDocumental.Models.ControladorDatos
             clsResultadoJson objResultado = new clsResultadoJson();
             try
             {
-                List<string> lstValidacione = validaDatosDocumento(objDocumento);
+                List<string> lstValidacione = validaDatosDocumento(objUsuario, objDocumento);
                 if (lstValidacione.Count == 0)
                 {
                     this.objControlador.setCommand("AppNetDocumentos_Guardar");
@@ -343,7 +374,8 @@ namespace GestionDocumental.Models.ControladorDatos
                     };
                     objDocumento.IDAppNetEmisor = new clsAppNetEmisor()
                     {
-                        ID = Convert.ToInt32(dttDatos.Rows[i]["IDAppNetEmisor"].ToString())
+                        ID = Convert.ToInt32(dttDatos.Rows[i]["IDAppNetEmisor"].ToString()),
+                        Nombre = dttDatos.Rows[i]["NombreEmisor"].ToString()
                     };
                     objDocumento.NumeroDocumento = dttDatos.Rows[i]["NumeroDocumento"].ToString();
                     objDocumento.FechaDocumento = Convert.ToDateTime(dttDatos.Rows[i]["FechaDocumento"].ToString());
@@ -504,5 +536,229 @@ namespace GestionDocumental.Models.ControladorDatos
             }
             return lstEstados;
         }
+
+
+        /// <summary>
+        /// Metodo utilizado para consultar el flujo de documentos
+        /// </summary>
+        /// <param name="objUsuario"></param>
+        /// <returns></returns>
+        public List<clsAppNetFlujoEstados> consultaListadoEstados(clsAppNetUsuarios objUsuario, int xID)
+        {
+            List<clsAppNetFlujoEstados> lstEstados = new List<clsAppNetFlujoEstados>();
+            try
+            {
+                this.objControlador.setCommand("AppNetFlujoEstados_Consulta");
+                this.objControlador.addNewParameter("@IDAppNetAdministrador", objUsuario.IDAdministrador);
+                this.objControlador.addNewParameter("@ID", xID);
+                DataSet dtsDatos = this.objControlador.execDataSetResult();
+
+                DataTable dttEstados = dtsDatos.Tables[0];
+                DataTable dttAcciones = dtsDatos.Tables[1];
+                for (int i = 0; i < dttEstados.Rows.Count; i++)
+                {
+                    clsAppNetFlujoEstados objEstado = new clsAppNetFlujoEstados();
+                    objEstado.ID = Convert.ToInt64(dttEstados.Rows[i]["ID"].ToString());
+                    objEstado.Nombre = dttEstados.Rows[i]["Nombre"].ToString();
+                    objEstado.OPcionMasiva = Convert.ToBoolean(dttEstados.Rows[i]["OPcionMasiva"].ToString());
+
+                    List<DataRow> lstItems = dttAcciones.Select("IDAppNetFlujoEstados = " + objEstado.ID.ToString()).ToList();
+                    for (int j = 0; j < lstItems.Count; j++)
+                    {
+                        clsAppNetFlujoEstados_Acciones objAccion = new clsAppNetFlujoEstados_Acciones();
+                        objAccion.ID = Convert.ToInt32(lstItems[j]["ID"].ToString());
+                        objAccion.Nombre = lstItems[j]["Nombre"].ToString();
+                        objAccion.IDAppNetFlujoEstados_Sigiente = Convert.ToInt32(lstItems[j]["IDAppNetFlujoEstados_Sigiente"].ToString());
+                        objEstado.lstAcciones.Add(objAccion);
+                    }
+                    lstEstados.Add(objEstado);
+                }
+                this.objControlador.closeConnection();
+                dtsDatos.Dispose();
+            }
+            catch (Exception ex)
+            {
+                cargarErro(ex);
+            }
+            return lstEstados;
+        }
+
+        /// <summary>
+        /// Metodo utilizado para consultar el flujo de documentos
+        /// </summary>
+        /// <param name="objUsuario"></param>
+        /// <returns></returns>
+        public List<clsAppNetFlujoEstados> consultaListadoEstados(clsAppNetUsuarios objUsuario, int xID, string xNombre)
+        {
+            List<clsAppNetFlujoEstados> lstEstados = new List<clsAppNetFlujoEstados>();
+            try
+            {
+                this.objControlador.setCommand("AppNetFlujoEstados_Consulta");
+                this.objControlador.addNewParameter("@IDAppNetAdministrador", objUsuario.IDAdministrador);
+                this.objControlador.addNewParameter("@ID", xID);
+                this.objControlador.addNewParameter("@Nombre", xNombre);
+                DataSet dtsDatos = this.objControlador.execDataSetResult();
+
+                DataTable dttEstados = dtsDatos.Tables[0];
+                DataTable dttAcciones = dtsDatos.Tables[1];
+                for (int i = 0; i < dttEstados.Rows.Count; i++)
+                {
+                    clsAppNetFlujoEstados objEstado = new clsAppNetFlujoEstados();
+                    objEstado.ID = Convert.ToInt64(dttEstados.Rows[i]["ID"].ToString());
+                    objEstado.Nombre = dttEstados.Rows[i]["Nombre"].ToString();
+                    objEstado.OPcionMasiva = Convert.ToBoolean(dttEstados.Rows[i]["OPcionMasiva"].ToString());
+                    objEstado.ConCorreo = Convert.ToBoolean(dttEstados.Rows[i]["ConCorreo"].ToString());
+                    objEstado.SeleccionaUsuarioAnterior = Convert.ToBoolean(dttEstados.Rows[i]["SeleccionaUsuarioAnterio"].ToString());
+
+                    List<DataRow> lstItems = dttAcciones.Select("IDAppNetFlujoEstados = " + objEstado.ID.ToString()).ToList();
+                    for (int j = 0; j < lstItems.Count; j++)
+                    {
+                        clsAppNetFlujoEstados_Acciones objAccion = new clsAppNetFlujoEstados_Acciones();
+                        objAccion.ID = Convert.ToInt32(lstItems[j]["ID"].ToString());
+                        objAccion.Nombre = lstItems[j]["Nombre"].ToString();
+                        objAccion.IDAppNetFlujoEstados_Sigiente = Convert.ToInt32(lstItems[j]["IDAppNetFlujoEstados_Sigiente"].ToString());
+                        objEstado.lstAcciones.Add(objAccion);
+                    }
+                    lstEstados.Add(objEstado);
+                }
+                this.objControlador.closeConnection();
+                dtsDatos.Dispose();
+            }
+            catch (Exception ex)
+            {
+                cargarErro(ex);
+            }
+            return lstEstados;
+        }
+
+
+        /// <summary>
+        /// Metodo utilizado para consultar el flujo de documentos
+        /// </summary>
+        /// <param name="objUsuario"></param>
+        /// <returns></returns>
+        public List<clsAppNetUsuarios> consultaListadoResponsables(int xIDEstado, int xIDAccion, clsAppNetUsuarios objUsuario)
+        {
+            List<clsAppNetUsuarios> lstEstados = new List<clsAppNetUsuarios>();
+            try
+            {
+                this.objControlador.setCommand("ConsultaResponsableSiguienteEstado");
+                this.objControlador.addNewParameter("@IDAppNetAdministrador", objUsuario.IDAdministrador);
+                this.objControlador.addNewParameter("@IDAppNetFlujoEstados_Acciones", xIDAccion);
+                this.objControlador.addNewParameter("@IDAppNetUsuario", objUsuario.ID);
+                DataSet dtsDatos = this.objControlador.execDataSetResult();
+
+                DataTable dttEstados = dtsDatos.Tables[0];
+                for (int i = 0; i < dttEstados.Rows.Count; i++)
+                {
+                    clsAppNetUsuarios objEstado = new clsAppNetUsuarios();
+                    objEstado.ID = Convert.ToInt64(dttEstados.Rows[i]["ID"].ToString());
+                    objEstado.Nombre = dttEstados.Rows[i]["Nombre"].ToString();
+                    lstEstados.Add(objEstado);
+                }
+                this.objControlador.closeConnection();
+                dtsDatos.Dispose();
+            }
+            catch (Exception ex)
+            {
+                cargarErro(ex);
+            }
+            return lstEstados;
+        }
+
+        /// <summary>
+        /// Metodo utilizado para asignación masiva de documentos al flujo documental
+        /// </summary>
+        /// <param name="xIDDOcumentos"></param>
+        /// <param name="xIDEstado"></param>
+        /// <param name="xIDAccion"></param>
+        /// <param name="xResponsable"></param>
+        /// <returns></returns>
+        public clsResultadoJson asignacionFlujoDocumentos(string xIDDOcumentos, int xIDEstado, int xIDAccion, int xResponsable, clsAppNetUsuarios objUsuario)
+        {
+            clsResultadoJson objJsonResultado = new clsResultadoJson();
+            try
+            {
+                this.objControlador.setCommand("asignacionMasivaDocumentos");
+                this.objControlador.addNewParameter("@IDDocumentos", xIDDOcumentos);
+                this.objControlador.addNewParameter("@IDEstado", xIDEstado);
+                this.objControlador.addNewParameter("@IDAccion", xIDAccion);
+                this.objControlador.addNewParameter("@IDResponsable", xResponsable);
+                this.objControlador.addNewParameter("@IDAppNetAdministrador", objUsuario.IDAdministrador);
+                this.objControlador.addNewParameter("@IDAppNetUsuario", objUsuario.ID);
+                this.objControlador.execScalar();
+                this.objControlador.closeConnection();
+                objJsonResultado.MensajeProceso = "Proceso realizado correctamente.";
+            }
+            catch (Exception ex)
+            {
+                objJsonResultado.cargarErro(ex);
+            }
+            return objJsonResultado;
+        }
+
+        /// <summary>
+        /// Metodo utilizado para asignación masiva de documentos al flujo documental
+        /// </summary>
+        /// <param name="xIDDOcumentos"></param>
+        /// <param name="xIDEstado"></param>
+        /// <param name="xIDAccion"></param>
+        /// <param name="xResponsable"></param>
+        /// <returns></returns>
+        public void cargaTablaTemporalAcciones(string xGuid, int xIDEstado)
+        {
+            try
+            {
+                this.objControlador.setCommand("cargaTemporalEstado");
+                this.objControlador.addNewParameter("@CodigoGuid", xGuid);
+                this.objControlador.addNewParameter("@IDAppNetFlujoEstados", xIDEstado);
+                this.objControlador.execScalar();
+                this.objControlador.closeConnection();
+            }
+            catch (Exception ex)
+            {
+                cargarErro(ex);
+            }
+        }
+
+        /// <summary>
+        /// Metodo utilizado para consultar temporalpara la edicion de estado
+        /// </summary>
+        /// <param name="xGuid"></param>
+        /// <returns></returns>
+        public List<clsAppNetFlujoEstados_Acciones> cargaTemporalPorGuid(string xGuid)
+        {
+            this.objControlador.setCommand("consultaTemporal");
+            this.objControlador.addNewParameter("@CodigoGuid", xGuid);
+            DataTable dttDatos = this.objControlador.execTableResult();
+            List<clsAppNetFlujoEstados_Acciones> lstAcciones = new List<clsAppNetFlujoEstados_Acciones>();
+            for (int j = 0; j < dttDatos.Rows.Count; j++)
+            {
+                clsAppNetFlujoEstados_Acciones objAccion = new clsAppNetFlujoEstados_Acciones();
+                objAccion.ID = Convert.ToInt32(dttDatos.Rows[j]["ID"].ToString());
+                objAccion.Nombre = dttDatos.Rows[j]["Nombre"].ToString();
+                objAccion.IDAppNetFlujoEstados_Sigiente = Convert.ToInt32(dttDatos.Rows[j]["IDAppNetFlujoEstados_Sigiente"].ToString());
+                lstAcciones.Add(objAccion);
+            }
+            this.objControlador.closeConnection();
+            return lstAcciones;
+        }
+
+
+
+        /// <summary>
+        /// Metodo utilizado para consultar temporalpara la edicion de estado
+        /// </summary>
+        /// <param name="xGuid"></param>
+        /// <returns></returns>
+        public clsResultadoJson guardarAccionTemporal(clsAppNetFlujoEstados_Acciones objAccion, clsAppNetUsuarios objUsuario)
+        {
+            clsResultadoJson objResultado = new clsResultadoJson();
+            this.objControlador.setCommand("consultaTemporal");
+            this.objControlador.closeConnection();
+            return objResultado;
+        }
+
+
     }
 }

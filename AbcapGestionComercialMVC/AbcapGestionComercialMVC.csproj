@@ -637,6 +637,11 @@
     <Content Include="Views\Basico\Emisor.cshtml" />
     <Content Include="Views\Basico\AdministrarEmisor.cshtml" />
     <Content Include="Views\Basico\Emisor_Listados.cshtml" />
+    <Content Include="Views\Basico\FlujoDocumental.cshtml" />
+    <Content Include="Views\Basico\FlujoDocumental_Listados.cshtml" />
+    <Content Include="Views\Basico\FlujoDocumentalAdministrador.cshtml" />
+    <Content Include="Views\Basico\FlujoDocumentalAdministrador_Responsables.cshtml" />
+    <Content Include="Views\Basico\FlujoDocumentalAdministrador_XAccion.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

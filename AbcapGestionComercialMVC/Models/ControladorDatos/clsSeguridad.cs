@@ -392,7 +392,7 @@ namespace AbcapGestionComercialMVC.Models.ControladorDatos
             }
             else
             {
-                objUsuario = this.consultaUsuarioBD(objUsuario,false);
+                objUsuario = this.consultaUsuarioBD(objUsuario, false);
                 if (objUsuario == null)
                 {
                     cadenaValidacion.Add("Usuario o clave invalida");
@@ -456,6 +456,11 @@ namespace AbcapGestionComercialMVC.Models.ControladorDatos
                 }
                 objHTML.Append("</ul>");
                 objHTML.Append("</li>");
+            }
+
+            if (objHTML.Length == 0)
+            {
+                objHTML.Append("<strong>Sin permisos.</strong>");
             }
 
             if (objHTML.Length > 0)

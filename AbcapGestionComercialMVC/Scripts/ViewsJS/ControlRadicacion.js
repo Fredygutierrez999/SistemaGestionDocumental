@@ -1,5 +1,4 @@
-﻿var lstSoportes = new Array();
-/**
+﻿/**
  * Carga listado de soportes
  */
 function cargarListadoSoportes() {
@@ -53,14 +52,14 @@ function guardarRadicacion() {
         type: "POST",
         data: _Data,
         dataType: "JSON",
-        success: function (data) {
+        success: function(data) {
             if (data.ResultadoProceso) {
                 mostrarMensajeUrl(5, data.MensajeProceso, "./MisDocumentos?IDDocumento=" + data.objResultado);
             } else {
                 mostrarMensaje(2, data.MensajeProceso);
             }
         },
-        error: function (jqXHR, textStatus, error) {
+        error: function(jqXHR, textStatus, error) {
             mostrarMensaje(2, error);
         }
     });
@@ -112,6 +111,26 @@ function consultarDetalle() {
         type: "POST",
         data: xDataFMr,
         dataType: "HTML",
+        success: function(data) {
+            $('#contenidoDetalle').html(data);
+        },
+        error: function(jqXHR, textStatus, error) {
+            mostrarMensaje(2, error);
+        }
+    });
+}
+
+
+/*
+ * Busca documentos con filtros indicados
+ * */
+function consultarDetalle_Todos() {
+    var xDataFMr = $('#fmrDetalleDocumento').serialize();
+    $.ajax({
+        url: "/Radicacion/MisDocumentos_Detalle_Todos",
+        type: "POST",
+        data: xDataFMr,
+        dataType: "HTML",
         success: function (data) {
             $('#contenidoDetalle').html(data);
         },
@@ -155,11 +174,11 @@ function consultarMovimiento(XIDDocumento) {
         type: "POST",
         data: "xIDDocumento=" + XIDDocumento,
         dataType: "HTML",
-        success: function (data) {
+        success: function(data) {
             $('#divCuerpoDocumentoMovimientos').html(data);
             $('#popupListadoMovimientos').modal('show');
         },
-        error: function (jqXHR, textStatus, error) {
+        error: function(jqXHR, textStatus, error) {
             mostrarMensaje(2, error);
         }
     });
@@ -177,7 +196,7 @@ function buscarEmisorKeyPres(e) {
             type: "POST",
             data: "xFiltro=" + xFiltro,
             dataType: "JSON",
-            success: function (data) {
+            success: function(data) {
                 if (data.ResultadoProceso) {
                     var strHtml = "";
                     for (var i = 0; i < data.objResultado.length; i++) {
@@ -188,9 +207,196 @@ function buscarEmisorKeyPres(e) {
                     mostrarMensaje(2, data.MensajeProceso);
                 }
             },
-            error: function (jqXHR, textStatus, error) {
+            error: function(jqXHR, textStatus, error) {
                 mostrarMensaje(2, error);
             }
         });
     }
+}
+
+
+var lstItemSeleccionados = new Array();
+/**
+ * Selecciona Item a siguiente nivel
+ * @param {any} chk
+ * @param {any} xID
+ */
+function SeleccionarItem(chk, xID) {
+    var objItem = JSON.parse($(chk).attr("data"));
+    if ($(chk).prop("checked") == true) {
+        $($($(chk).parent()).parent()).css("background-color", "yellow");
+        agregarItem(objItem);
+    } else {
+        $($($(chk).parent()).parent()).css("background-color", "");
+        eliminaItem(objItem.ID);
+    }
+}
+
+/**
+ * Agrega Item a lista
+ * @param {any} objItem
+ */
+function agregarItem(objItem) {
+    lstItemSeleccionados.push(objItem);
+    var strItem = '<div id="Divitem_' + objItem.ID + '" class="itemSeleccionadoFactura"><span class="glyphicon glyphicon-remove pointer" onClick="eliminaItem(' + objItem.ID + ');" style="color:red"></span> ' + objItem.NumeroDocumento + '</div>';
+    $('#contenidoItemsSeleccionadosDetalle').html($('#contenidoItemsSeleccionadosDetalle').html() + strItem);
+    $('#lblCantidadSeleccion').html(lstItemSeleccionados.length);
+}
+
+/**
+ * Agrega Item a lista
+ * @param {any} objItem
+ */
+function eliminaItem(xIDobjItem) {
+    var xID = lstItemSeleccionados.indexOf(m => m.ID == xIDobjItem);
+    lstItemSeleccionados.splice(xID, 1);
+
+    var objChk = $('#chkSeleccionaItem_' + xIDobjItem)[0];
+    if (objChk != null) {
+        $($($(objChk).parent()).parent()).css("background-color", "");
+        $(objChk).prop("checked", false);
+    }
+    $('#Divitem_' + xIDobjItem).remove();
+    $('#lblCantidadSeleccion').html(lstItemSeleccionados.length);
+}
+
+/**
+ * Limpia datos cargados en pantalla
+ * */
+function limpiarPantalla() {
+    /*LIMPIA DATOS*/
+    lstItemSeleccionados = new Array();
+    $('#contenidoItemsSeleccionadosDetalle').html('');
+    $('#lblCantidadSeleccion').html(lstItemSeleccionados.length);
+}
+
+/**
+ * Cambia estado de busqueda
+ * @param {any} cmb
+ */
+function cambiaEstado(cmb) {
+
+    limpiarPantalla();
+
+    var xID = $(cmb).val();
+    if (xID != -1) {
+        $.ajax({
+            url: "/Radicacion/consultaEstados",
+            type: "POST",
+            data: "xID=" + xID,
+            dataType: "JSON",
+            success: function(data) {
+                if (data) {
+                    if (data.OPcionMasiva) {
+                        var strHtml = "";
+                        for (var i = 0; i < data.lstAcciones.length; i++) {
+                            strHtml += '<option value="' + data.lstAcciones[i].ID + '">' + data.lstAcciones[i].Nombre + '</option>';
+                        }
+                        $('#cmbAccionesEstados').html(strHtml);
+                        $('#contenidoConResponsable').css('display', 'block');
+                        $('#contenidoSinItemsSeleccionadosDetalle').css('display', 'none');
+
+                    } else {
+                        $('#contenidoConResponsable').css('display', 'none');
+                        $('#contenidoSinItemsSeleccionadosDetalle').css('display', 'block');
+                    }
+                } else {
+                    $('#contenidoConResponsable').css('display', 'none');
+                    $('#contenidoSinItemsSeleccionadosDetalle').css('display', 'block');
+                }
+            },
+            error: function(jqXHR, textStatus, error) {
+                mostrarMensaje(2, error);
+                $('#contenidoConResponsable').css('display', 'none');
+                $('#contenidoSinItemsSeleccionadosDetalle').css('display', 'block');
+            }
+        });
+    } else {
+        $('#contenidoConResponsable').css('display', 'none');
+        $('#contenidoSinItemsSeleccionadosDetalle').css('display', 'block');
+    }
+}
+
+/**
+ * Carga listado de responsables
+ * @param {any} cmb
+ */
+function cargarResponsableEstado(cmb) {
+    var xIDEstado = $('#xBIDEstadoDocumento').val();
+    var xIDAccion = $(cmb).val();
+    $.ajax({
+        url: "/Radicacion/consultaListadoResponsables",
+        type: "POST",
+        data: "xIDEstado=" + xIDEstado + '&xIDAccion=' + xIDAccion,
+        dataType: "JSON",
+        success: function(data) {
+            if (data) {
+                var strHtml = "";
+                for (var i = 0; i < data.length; i++) {
+                    strHtml += '<option value="' + data[i].ID + '">' + data[i].Nombre + '</option>';
+                }
+                $('#cmbAccionesResponsable').html(strHtml);
+            } else {
+                $('#cmbAccionesResponsable').html("");
+            }
+        },
+        error: function(jqXHR, textStatus, error) {
+            mostrarMensaje(2, error);
+            $('#cmbAccionesResponsable').html("");
+        }
+    });
+}
+
+/**
+ * Asigna usuario a siguient estado
+ * */
+function asignarDocumentosASiguienteEstado() {
+    var objEstado = $('#xBIDEstadoDocumento').val();
+    var objAccion = $('#cmbAccionesEstados').val();
+    var objResponsable = $('#cmbAccionesResponsable').val();
+
+    if (lstItemSeleccionados.length == 0) {
+        mostrarMensaje(2, "Debe seleccionar al menos un documento.");
+        return 0;
+    }
+    if (objEstado == null || objEstado == -1) {
+        mostrarMensaje(2, "Debe seleccionar un estado valido.");
+        return 0;
+    }
+    if (objAccion == null) {
+        mostrarMensaje(2, "Debe seleccionar una acción.");
+        return 0;
+    }
+    if (objResponsable == null) {
+        mostrarMensaje(2, "Debe seleccionar un responsable.");
+        return 0;
+    }
+
+    var strItem = '';
+    for (var i = 0; i < lstItemSeleccionados.length; i++) {
+        strItem += lstItemSeleccionados[i].ID + ',';
+    }
+
+
+    $.ajax({
+        url: "/Radicacion/asignacionDocumentosASiguienteEstado",
+        type: "POST",
+        data: "xIDDocumentos=" + strItem + '&xEstado=' + objEstado + '&xAccion=' + objAccion + '&xIDResponsable=' + objResponsable,
+        dataType: "JSON",
+        success: function(data) {
+            if (data.ResultadoProceso) {
+                mostrarMensaje(1, data.MensajeProceso);
+                limpiarPantalla();
+                consultarDetalle();
+            } else {
+                mostrarMensaje(2, data.MensajeProceso);
+            }
+        },
+        error: function(jqXHR, textStatus, error) {
+            mostrarMensaje(2, error);
+            $('#cmbAccionesResponsable').html("");
+        }
+    });
+
+
 }
